@@ -10,7 +10,8 @@ include_once 'dkan_workflow.features.inc';
  * Implements hook_menu_alter().
  */
 function dkan_workflow_menu_alter(&$items) {
-  // Hide the default workbench_content screen because it duplicates functionality
+  // Hide the default workbench_content screen because it duplicates
+  // functionalities.
   $items['admin/workbench']['page callback'] = 'workbench_create';
   $items['admin/workbench/content']['page callback'] = 'workbench_create';
   unset($items['admin/workbench/create']);
@@ -43,5 +44,15 @@ function dkan_workflow_css_alter(&$css) {
       // Only change the first (and most likely unique) occurrence.
       break;
     }
+  }
+}
+
+/**
+ * Implements hook_block_list_alter().
+ */
+function dkan_workflow_block_info_alter(&$blocks, $theme, $code_blocks) {
+  // Disabled workbench default moderation block.
+  if ($blocks['workbench']['block']['region'] == 'content') {
+    $blocks['workbench']['block']['status'] = 0;
   }
 }

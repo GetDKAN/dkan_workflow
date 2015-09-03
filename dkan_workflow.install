@@ -17,15 +17,13 @@ function dkan_workflow_install() {
   );
 
   $item_id = menu_link_save($item);
-
 }
 
 /**
  * Implements hook_enable().
  */
 function dkan_workflow_enable() {
- // Ensure dataset and resource have "moderation" states.
-
+  // Ensure dataset and resource have "moderation" states.
   $states = array('published', 'moderation', 'revision');
   foreach (array('dataset', 'resource') as $type) {
     variable_set('node_options_' . $type, $states);
