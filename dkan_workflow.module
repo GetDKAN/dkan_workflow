@@ -21,10 +21,6 @@ function dkan_workflow_menu_alter(&$items) {
  */
 function dkan_workflow_permission() {
   return array(
-    'access unpublished data' => array(
-      'title' => t('Access Unpublished Data'),
-      'description' => t('Grant access to unpublished data page.'),
-    ),
     'access stale reviews page' => array(
       'title' => t('Access Stale Reviews Page'),
       'description' => t('Grant access to stale reviews page.'),
