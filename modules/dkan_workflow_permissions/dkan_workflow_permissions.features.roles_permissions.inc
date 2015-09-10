@@ -10,11 +10,11 @@
 function dkan_workflow_permissions_default_roles_permissions() {
   $roles = array();
 
-  // Exported role: Workflow Approver
-  $roles['Workflow Approver'] = array(
-    'name' => 'Workflow Approver',
+  // Exported role: Workflow Moderator
+  $roles['Workflow Moderator'] = array(
+    'name' => 'Workflow Moderator',
     'weight' => 8,
-    'machine_name' => 'workflow_approver',
+    'machine_name' => 'workflow_moderator',
     'permissions' => array(
       'access workbench' => TRUE,
       'moderate content from draft to needs_review' => TRUE,
@@ -28,11 +28,11 @@ function dkan_workflow_permissions_default_roles_permissions() {
     ),
   );
 
-  // Exported role: Workflow Creator
-  $roles['Workflow Creator'] = array(
-    'name' => 'Workflow Creator',
+  // Exported role: Workflow Contributor
+  $roles['Workflow Contributor'] = array(
+    'name' => 'Workflow Contributor',
     'weight' => 7,
-    'machine_name' => 'workflow_creator',
+    'machine_name' => 'workflow_contributor',
     'permissions' => array(
       'access workbench' => TRUE,
       'moderate content from draft to needs_review' => TRUE,
