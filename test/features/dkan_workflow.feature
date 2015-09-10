@@ -10,9 +10,9 @@ Feature: Workbench
       | name    | mail             | roles                |
       | Jeff    | jeff@test.com    | portal administrator |
       | Gabriel | gabriel@test.com | content editor       |
-      | Katie   | katie@test.com   | data contributor     |
-      | Celeste | celeste@test.com | data contributor     |
-      | Jaz     | jaz@test.com     | data contributor     |
+      | Katie   | katie@test.com   | workflow contributor     |
+      | Celeste | celeste@test.com | workflow contributor     |
+      | Jaz     | jaz@test.com     | workflow contributor     |
     And "tags" terms:
       | name   |
       | Health |
@@ -34,7 +34,7 @@ Feature: Workbench
       | Resource 051 | Katie   | Dataset 05 | published  | csv    |
 
   @api
-  Scenario: As a Data Contributor I want to moderate my own Datasets
+  Scenario: As a Workflow Contributor I want to moderate my own Datasets
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I follow "Moderate"
@@ -44,7 +44,7 @@ Feature: Workbench
     And I should see "Draft --> Needs Review"
 
   @api
-  Scenario: As a Content Editor I want to Publish datasets posted by a Data Contributor
+  Scenario: As a Content Editor I want to Publish datasets posted by a Workflow Contributor
     Given I am logged in as "Gabriel"
     And I am on "Dataset 01" page
     When I follow "Moderate"
@@ -91,8 +91,8 @@ Feature: Workbench
       | content editor            |
 
   @api
-  Scenario: View 'My workbench' page for "data contributor" role
-    Given I am logged in as a user with the "data contributor" role
+  Scenario: View 'My workbench' page for "workflow contributor" role
+    Given I am logged in as a user with the "workflow contributor" role
     Then I should see the link "My Workbench" in the navigation region
     When I follow "My Workbench"
     Then I should see "My Content"
@@ -117,7 +117,7 @@ Feature: Workbench
     And I should see an ".link-badge" element
 
   @api @mail
-  Scenario: As a Content Editor I want to receive an email notification when "Data Contributor" add a Dataset that "Needs Review".
+  Scenario: As a Content Editor I want to receive an email notification when "Workflow Contributor" add a Dataset that "Needs Review".
     Given I am logged in as "Katie"
     And I am on "Datasets" page
     When I click "Add Dataset"
