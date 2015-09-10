@@ -10,10 +10,6 @@ projects[entityreference_unpublished_node][type] = module
 projects[features_roles_permissions][version] = 1.2
 projects[features_roles_permissions][subdir] = contrib
 
-; @TODO remove this dependency if required by dkan core.
-projects[role_export][version] = 1.0
-projects[role_export][subdir] = contrib
-
 projects[menu_admin_per_menu][version] = 1.0
 projects[menu_admin_per_menu][subdir] = contrib
 
