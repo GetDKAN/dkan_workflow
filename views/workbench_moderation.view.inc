@@ -537,18 +537,7 @@ $handler->display->display_options['filters']['type']['expose']['operator_id'] =
 $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
 $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
-  2 => '2',
-  1 => 0,
-  200153887 => 0,
-  30037204 => 0,
-  210394380 => 0,
-  210770034 => 0,
-  190180509 => 0,
-  169051924 => 0,
-  57821158 => 0,
-  188284353 => 0,
-);
+$handler->display->display_options['filters']['type']['expose']['remember_roles'] = TRUE;
 
 $handler->display->display_options['path'] = 'admin/workbench/drafts-active';
 $handler->display->display_options['menu']['type'] = 'tab';
