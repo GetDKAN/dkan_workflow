@@ -44,3 +44,9 @@ ul.action-links li {
    background: #fff;
    color: #005489;
 }
+.view-workbench-moderation .views-exposed-form label {
+  display: inline-block;
+}
+.view-workbench-moderation .views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 21px;
+}

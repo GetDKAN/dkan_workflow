@@ -520,6 +520,36 @@ $handler->display->display_options['filters']['title']['expose']['label'] = 'Tit
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
+/* Filter criterion: Content: Type */
+$handler->display->display_options['filters']['type']['id'] = 'type';
+$handler->display->display_options['filters']['type']['table'] = 'node';
+$handler->display->display_options['filters']['type']['field'] = 'type';
+$handler->display->display_options['filters']['type']['relationship'] = 'nid';
+$handler->display->display_options['filters']['type']['value'] = array(
+  'blog' => 'blog',
+  'dataset' => 'dataset',
+  'group' => 'group',
+  'page' => 'page',
+  'resource' => 'resource',
+);
+$handler->display->display_options['filters']['type']['exposed'] = TRUE;
+$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+$handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  210394380 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+  57821158 => 0,
+  188284353 => 0,
+);
+
 $handler->display->display_options['path'] = 'admin/workbench/drafts-active';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'My drafts';
@@ -768,12 +798,6 @@ $handler->display->display_options['filters']['type']['expose']['label'] = 'Type
 $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
 $handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
-/* Filter criterion: User: Current */
-$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['table'] = 'users';
-$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
-$handler->display->display_options['filters']['uid_current']['value'] = '1';
 $handler->display->display_options['path'] = 'admin/workbench/needs-review-active';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Needs review';
@@ -1384,13 +1408,6 @@ $handler->display->display_options['filters']['state']['value'] = array(
   'needs_review' => 'needs_review',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
-/* Filter criterion: User: Current */
-$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['table'] = 'users';
-$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
-$handler->display->display_options['filters']['uid_current']['value'] = '1';
-
 
 /* Display: Stale Drafts Badge */
 $handler = $view->new_display('menu_badge', 'Stale Drafts Badge', 'stale_drafts_badge');
@@ -1473,12 +1490,6 @@ $handler->display->display_options['fields']['vid']['relationship'] = 'nid';
 $handler->display->display_options['fields']['vid']['group_type'] = 'count_distinct';
 $handler->display->display_options['fields']['vid']['label'] = '';
 $handler->display->display_options['fields']['vid']['element_label_colon'] = FALSE;
-/* Filter criterion: User: Current */
-$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['table'] = 'users';
-$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
-$handler->display->display_options['filters']['uid_current']['value'] = '1';
 $handler->display->display_options['filters']['uid_current']['group'] = 1;
 /* Filter criterion: Workbench Moderation: Current */
 $handler->display->display_options['filters']['is_current']['id'] = 'is_current';
