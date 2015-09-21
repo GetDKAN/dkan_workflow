@@ -768,6 +768,12 @@ $handler->display->display_options['filters']['type']['expose']['label'] = 'Type
 $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
 $handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
+/* Filter criterion: User: Current */
+$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['table'] = 'users';
+$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
+$handler->display->display_options['filters']['uid_current']['value'] = '1';
 $handler->display->display_options['path'] = 'admin/workbench/needs-review-active';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Needs review';
@@ -1329,6 +1335,12 @@ $handler->display->display_options['filters']['state']['value'] = array(
   'draft' => 'draft',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
+/* Filter criterion: User: Current */
+$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['table'] = 'users';
+$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
+$handler->display->display_options['filters']['uid_current']['value'] = '1';
 
 /* Display: Needs Review Badge */
 $handler = $view->new_display('menu_badge', 'Needs Review Badge', 'needs_review_badge');
@@ -1372,6 +1384,13 @@ $handler->display->display_options['filters']['state']['value'] = array(
   'needs_review' => 'needs_review',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
+/* Filter criterion: User: Current */
+$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['table'] = 'users';
+$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
+$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
+$handler->display->display_options['filters']['uid_current']['value'] = '1';
+
 
 /* Display: Stale Drafts Badge */
 $handler = $view->new_display('menu_badge', 'Stale Drafts Badge', 'stale_drafts_badge');
