@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Installation procedures for dkan_workflow
+ * Installation procedures for dkan_workflow.
  */
 
 /**
- * Implements hook_install()
+ * Implements hook_install().
  */
 function dkan_workflow_install() {
   $item = array(
@@ -17,6 +17,7 @@ function dkan_workflow_install() {
   );
 
   $item_id = menu_link_save($item);
+  dkan_workflow_revert_views();
 }
 
 /**
@@ -27,5 +28,28 @@ function dkan_workflow_enable() {
   $states = array('published', 'moderation', 'revision');
   foreach (array('dataset', 'resource') as $type) {
     variable_set('node_options_' . $type, $states);
+  }
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function dkan_workflow_update_7001() {
+  dkan_workflow_revert_views();
+  return t('DKAN Workflow views have been reverted.');
+}
+
+/**
+ * Reverts Views.
+ */
+function dkan_workflow_revert_views() {
+  ctools_include('object-cache');
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $view->delete();
+      ctools_object_cache_clear('view', $view->name);
+    }
   }
 }

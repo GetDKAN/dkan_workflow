@@ -56,3 +56,18 @@ function dkan_workflow_block_info_alter(&$blocks, $theme, $code_blocks) {
     $blocks['workbench']['block']['status'] = 0;
   }
 }
+
+/**
+ * Implements hook_views_default_views_alter().
+ *
+ * Load all views from /views folder. Overriding any existing views if any.
+ */
+function dkan_workflow_views_default_views_alter(&$views) {
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $views[$view->name] = $view;
+    }
+  }
+}
