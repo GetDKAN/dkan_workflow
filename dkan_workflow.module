@@ -71,3 +71,25 @@ function dkan_workflow_views_default_views_alter(&$views) {
     }
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'views_exposed_form' && strpos($form_state['view']->name, 'workbench_') === 0) {
+    dkan_workflow_limit_workflow_exposed_filter_node_types($form);
+  }
+}
+
+/**
+ * Limits exposed form node options to Dataset and Resource.
+ */
+function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
+  $options = $form['type']['#options'];
+  $form['type']['#options'] = array_filter($options, function($type) {
+    return in_array($type, array('- Any -', 'Dataset', 'Resource'));
+  });
+
+  $form['type']['#default_value'] = 'Dataset';
+  $form['type']['#validated'] = TRUE;
+}
