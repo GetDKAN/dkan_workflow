@@ -26,64 +26,10 @@ $handler->display->display_options['pager']['options']['offset'] = '0';
 $handler->display->display_options['pager']['options']['id'] = '0';
 $handler->display->display_options['pager']['options']['expose']['items_per_page'] = TRUE;
 $handler->display->display_options['pager']['options']['expose']['items_per_page_options'] = '10, 25, 50, 100, 200';
-$handler->display->display_options['style_plugin'] = 'table';
-$handler->display->display_options['style_options']['columns'] = array(
-  'nid' => 'nid',
-  'title' => 'title',
-  'type' => 'type',
-  'status' => 'status',
-  'timestamp' => 'timestamp',
-  'edit_node' => 'edit_node',
-  'is_published' => 'is_published',
-);
-$handler->display->display_options['style_options']['default'] = 'timestamp';
-$handler->display->display_options['style_options']['info'] = array(
-  'nid' => array(
-    'sortable' => 0,
-    'default_sort_order' => 'asc',
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'title' => array(
-    'sortable' => 1,
-    'default_sort_order' => 'asc',
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'type' => array(
-    'sortable' => 1,
-    'default_sort_order' => 'asc',
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'status' => array(
-    'sortable' => 1,
-    'default_sort_order' => 'asc',
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'timestamp' => array(
-    'sortable' => 1,
-    'default_sort_order' => 'desc',
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'edit_node' => array(
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-  'is_published' => array(
-    'align' => '',
-    'separator' => '',
-    'empty_column' => 0,
-  ),
-);
+$handler->display->display_options['style_plugin'] = 'workflow_list';
+$handler->display->display_options['style_options']['vbo_field'] = 'views_bulk_operations';
+$handler->display->display_options['style_options']['vid_field'] = 'vid';
+$handler->display->display_options['row_plugin'] = 'fields';
 /* Footer: Global: Text area */
 $handler->display->display_options['footer']['area']['id'] = 'area';
 $handler->display->display_options['footer']['area']['table'] = 'views';
@@ -174,6 +120,12 @@ $handler->display->display_options['fields']['views_bulk_operations']['vbo_opera
     'label' => 'Unpublish',
   ),
 );
+/* Field: Content revision: Vid */
+$handler->display->display_options['fields']['vid']['id'] = 'vid';
+$handler->display->display_options['fields']['vid']['table'] = 'node_revision';
+$handler->display->display_options['fields']['vid']['field'] = 'vid';
+$handler->display->display_options['fields']['vid']['label'] = '';
+$handler->display->display_options['fields']['vid']['element_label_colon'] = FALSE;
 /* Sort criterion: Content: Updated date */
 $handler->display->display_options['sorts']['changed']['id'] = 'changed';
 $handler->display->display_options['sorts']['changed']['table'] = 'node';
