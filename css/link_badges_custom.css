@@ -52,7 +52,8 @@ ul.action-links li {
 }
 
 dl dt, dl dd {
-    background-color: white;
+  background-color: white;
+  position: relative;
 }
 
 dl dt {
@@ -61,14 +62,14 @@ dl dt {
 
 dl dd {
   float: left;
-  position: relative;
 }
 
 dl dd:before {
-    background-color: inherit;
-    content: "";
-    height: 100%;
-    left: -100%;
-    position: absolute;
-    width: 100%;
+  background-color: inherit;
+  content: "";
+  height: 100%;
+  left: -100%;
+  position: absolute;
+  width: 100%;
+  top: 0;
 }
