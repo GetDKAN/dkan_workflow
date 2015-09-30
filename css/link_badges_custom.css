@@ -50,3 +50,26 @@ ul.action-links li {
 .view-workbench-moderation .views-exposed-form .views-exposed-widget .form-submit {
   margin-top: 21px;
 }
+
+dl dt, dl dd {
+  background-color: white;
+  position: relative;
+}
+
+dl dt {
+  z-index: 1;
+}
+
+dl dd {
+  float: left;
+}
+
+dl dd:before {
+  background-color: inherit;
+  content: "";
+  height: 100%;
+  left: -100%;
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
