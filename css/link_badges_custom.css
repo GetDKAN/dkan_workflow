@@ -51,8 +51,12 @@ ul.action-links li {
   margin-top: 21px;
 }
 
-dt, dd {
+dl dt, dl dd {
     background-color: white;
+}
+
+dl dt {
+  z-index: 1;
 }
 
 dl dd {
@@ -60,12 +64,11 @@ dl dd {
   position: relative;
 }
 
-dd:before {
+dl dd:before {
     background-color: inherit;
     content: "";
     height: 100%;
     left: -100%;
     position: absolute;
     width: 100%;
-    z-index: -1;
 }
