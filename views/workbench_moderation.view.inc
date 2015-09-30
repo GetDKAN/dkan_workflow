@@ -526,10 +526,7 @@ $handler->display->display_options['filters']['type']['table'] = 'node';
 $handler->display->display_options['filters']['type']['field'] = 'type';
 $handler->display->display_options['filters']['type']['relationship'] = 'nid';
 $handler->display->display_options['filters']['type']['value'] = array(
-  'blog' => 'blog',
   'dataset' => 'dataset',
-  'group' => 'group',
-  'page' => 'page',
   'resource' => 'resource',
 );
 $handler->display->display_options['filters']['type']['exposed'] = TRUE;
@@ -538,6 +535,7 @@ $handler->display->display_options['filters']['type']['expose']['label'] = 'Type
 $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
 $handler->display->display_options['filters']['type']['expose']['remember_roles'] = TRUE;
+$handler->display->display_options['filters']['type']['expose']['reduce'] = TRUE;
 
 $handler->display->display_options['path'] = 'admin/workbench/drafts-active';
 $handler->display->display_options['menu']['type'] = 'tab';
