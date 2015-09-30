@@ -53,11 +53,11 @@ ul.action-links li {
 
 dt, dd {
     background-color: white;
-    position: relative;
 }
 
 dl dd {
   float: left;
+  position: relative;
 }
 
 dd:before {
