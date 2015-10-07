@@ -1436,7 +1436,7 @@ $handler->display->display_options['filters']['state']['id'] = 'state';
 $handler->display->display_options['filters']['state']['table'] = 'workbench_moderation_node_history';
 $handler->display->display_options['filters']['state']['field'] = 'state';
 $handler->display->display_options['filters']['state']['value'] = array(
-  'needs_review' => 'needs_review',
+  'draft' => 'draft',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
 /* Filter criterion: Workbench Moderation: Timestamp */
