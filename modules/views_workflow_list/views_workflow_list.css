@@ -31,6 +31,7 @@
   width: 30%;
   text-align: left;
   vertical-align: middle;
+  word-wrap: break-word;
 }
 
 .views-workflow-list-item .item-content .views-workflow-list-revision-user {
