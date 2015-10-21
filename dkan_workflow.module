@@ -93,3 +93,50 @@ function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
   $form['type']['#default_value'] = 'Dataset';
   $form['type']['#validated'] = TRUE;
 }
+
+/**
+ * Implements hook_views_pre_view().
+ *
+ * Add contextual filters for workbench_moderation to accomodate some special
+ * cases.
+ *
+ * Ref. NuCivic/healthdata#487
+ */
+function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
+  $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
+  $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+
+  // On the Needs Review tab, Workflow Moderator can see only content submitted to
+  // their organic group.
+  if (user_has_role($role_workflow_moderator->rid)
+    && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+      // Contextual filter: OG membership: Group ID
+      $og_membership = array();
+      $og_membership['table'] = 'og_membership';
+      $og_membership['field'] = 'gid';
+      $og_membership['relationship'] = 'nid';
+      $og_membership['default_action'] = 'default';
+      $og_membership['default_argument_type'] = 'og_user_groups';
+      $og_membership['summary']['number_of_records'] = '0';
+      $og_membership['summary']['format'] = 'default_summary';
+      $og_membership['summary_options']['items_per_page'] = '25';
+      $og_membership['break_phrase'] = TRUE;
+
+      $view->set_item($display_id, 'argument', 'gid', $og_membership);
+    }
+  // On the Needs Review tab, Workflow Contributor can see only content they have
+  // submitted.
+  elseif (user_has_role($role_workflow_contributor->rid)
+    && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+      // Contextual filter: Content: Author uid
+      $author_uid['table'] = 'node';
+      $author_uid['field'] = 'uid';
+      $author_uid['relationship'] = 'nid';
+      $author_uid['default_action'] = 'default';
+      $author_uid['default_argument_type'] = 'current_user';
+      $author_uid['summary']['number_of_records'] = '0';
+      $author_uid['summary']['format'] = 'default_summary';
+      $author_uid['summary_options']['items_per_page'] = '25';
+      $view->set_item($display_id, 'argument', 'uid', $author_uid);
+    }
+}
