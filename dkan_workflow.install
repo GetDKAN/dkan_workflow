@@ -22,12 +22,20 @@ function dkan_workflow_install() {
 
 /**
  * Implements hook_enable().
+ *
+ * Enable moderation for dataset and resource upon install. This config is kept
+ * persistante using the hook_strongarm_alter().
  */
 function dkan_workflow_enable() {
-  // Ensure dataset and resource have "moderation" states.
-  $states = array('published', 'moderation', 'revision');
   foreach (array('dataset', 'resource') as $type) {
-    variable_set('node_options_' . $type, $states);
+    $var_name = 'node_options_' . $type;
+    $node_options = variable_get($var_name, array());
+    $node_options = $data[$var_name]->value;
+    // Remove status if set
+    $node_options = array_diff($node_options, array('status'));
+    // Add moderation and revision if needed.
+    $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
+    variable_set($var_name, node_options);
   }
 }
 

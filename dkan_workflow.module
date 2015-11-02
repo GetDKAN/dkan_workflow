@@ -140,3 +140,24 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
       $view->set_item($display_id, 'argument', 'uid', $author_uid);
     }
 }
+
+/**
+ * Implements hook_strongarm_alter().
+ *
+ * dkan_dataset_content_types exports node_options_(dataset|resource). For
+ * dkan_workflow to work we need to remove 'status' and make sure 'moderation'
+ * and 'revision' from the node_options variable.
+ */
+function dkan_workflow_strongarm_alter(&$data) {
+  foreach (array('dataset', 'resource') as $type) {
+    $var_name = 'node_options_' . $type;
+    if (isset($data[$var_name])) {
+      $node_options = $data[$var_name]->value;
+      // Remove status if set
+      $node_options = array_diff($node_options, array('status'));
+      // Add moderation and revision if needed.
+      $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
+      $data[$var_name]->value = $node_options;
+    }
+  }
+}
