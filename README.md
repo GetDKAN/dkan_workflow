@@ -1,23 +1,54 @@
 [![Build
 Status](https://travis-ci.org/NuCivic/dkan_workflow.svg?branch=master)](https://travis-ci.org/NuCivic/dkan_workflow)
 
-# NuCivic DKAN Workflow
+## What is DKAN?
+
+[DKAN](http://nucivic.com/dkan) is a Drupal-based open data tool with a full
+suite of cataloging, publishing and visualization features that allows
+governments, nonprofits and universities to easily publish data to the public.
+DKAN is maintained by [NuCivic](http://nucivic.com).
+
+## What is DKAN Workflow?
+![DKAN Workflow](./dkan_workflow_screenshot.png)
 
 Workflow implementation for [DKAN](https://github.com/NuCivic/dkan) based on
-[Workflow](https://www.drupal.org/project/workflow) and related modules.
+[Workbench](https://www.drupal.org/project/workbench) and related modules.
 
 ## Requirements
 
+* Dkan install. We do use undeclared dependencies used in core Dkan, for example
+  the dataset and resource content types, features_role_export...
+* All external dependencies other then core Dkan are incapsulated in the
+`dkan_workflow.make` file. This includes
+[Workbench](https://www.drupal.org/project/workbench) and related modules
+([Workbench Moderation](https://www.drupal.org/project/workbench_moderation) for
+the content moderation features, [Workbench
+Email](https://www.drupal.org/project/workbench_email) for email notifications.)
+* Better UX is made possible by using the [Link
+  Badges](https://www.drupal.org/project/link_badges) and [Menu
+  Badges](https://www.drupal.org/project/menu_badges)
+
+## Installation
+
 This module needs to be [built using drush
 make](https://github.com/NuCivic/nucivic-process/wiki/Using-drush-make-in-individual-modules)
-before being enabled. If you only use "drush download" you will miss key
+before being enabled. If you download only the module you will miss key
 dependencies for required modules and libraries.
 
-### Documentation
+To install:
+```
+cd <path to modules directory>
+git clone https://github.com/NuCivic/dkan_workflow
+drush make --no-core <path to modules directory>/dkan_workflow/dkan_workflow.make
+drush en dkan_workflow
+```
+
+## Documentation
+
 We are working on improving this documentation. Please let us know if you have
 any questions in the mean time.
 
-### Contributing
+## Contributing
 
 We are accepting issues in the dkan issue thread only ->
 https://github.com/NuCivic/dkan/issues -> Please label your issue as
