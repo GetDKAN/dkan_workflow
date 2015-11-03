@@ -23,19 +23,23 @@ function dkan_workflow_install() {
 /**
  * Implements hook_enable().
  *
- * Enable moderation for dataset and resource upon install. This config is kept
- * persistante using the hook_strongarm_alter().
+ * Enable moderation settings for dataset and resource upon install. This config
+ * updates the node_option_* variables exported by dkan_dataset by removing
+ * conflicting node publishing options and adding required ones to the array.
+ * This update is kept persistante using hook_strongarm_alter().
  */
 function dkan_workflow_enable() {
   foreach (array('dataset', 'resource') as $type) {
     $var_name = 'node_options_' . $type;
+    $options_remove =  array('status');
+    $options_add = array('moderation', 'revision');
+
     $node_options = variable_get($var_name, array());
-    $node_options = $data[$var_name]->value;
-    // Remove status if set
-    $node_options = array_diff($node_options, array('status'));
-    // Add moderation and revision if needed.
-    $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
-    variable_set($var_name, node_options);
+    // Remove conflicting options if set,
+    $node_options = array_diff($node_options, $options_remove);
+    // Add required options if not set.
+    $node_options = array_values(array_unique(array_merge($node_options, $options_add), SORT_REGULAR));
+    variable_set($var_name, $node_options);
   }
 }
 
