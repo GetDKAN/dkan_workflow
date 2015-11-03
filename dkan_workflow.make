@@ -1,21 +1,11 @@
 core = 7.x
 api = 2
 
-projects[entityreference_unpublished_node][download][type] = git
-projects[entityreference_unpublished_node][download][url] = "http://git.drupal.org/sandbox/Ayrmax/1977458.git"
-projects[entityreference_unpublished_node][subdir] = contrib
-projects[entityreference_unpublished_node][type] = module
-
 ; @TODO remove this dependency if required by dkan core.
 projects[features_roles_permissions][version] = 1.2
 projects[features_roles_permissions][subdir] = contrib
 
-projects[menu_admin_per_menu][version] = 1.0
-projects[menu_admin_per_menu][subdir] = contrib
-
-projects[view_unpublished][version] = 1.x-dev
-projects[view_unpublished][subdir] = contrib
-
+; Workbench and related modules.
 projects[workbench][version] = 1.2
 projects[workbench][subdir] = contrib
 
@@ -29,6 +19,7 @@ projects[workbench_email][subdir] = contrib
 projects[workbench_email][patch][2391233] = https://www.drupal.org/files/issues/workbench_email-2391233-3.patch
 projects[workbench_email][patch][2529016] = https://www.drupal.org/files/issues/workbench_email-skip_filter_anonymous-2529016.patch
 
+; Menu Badge features.
 projects[menu_badges][version] = 1.2
 projects[menu_badges][subdir] = contrib
 
