@@ -18,6 +18,27 @@ function dkan_workflow_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if (strpos($root_path, 'admin/workbench') === 0) {
+    // TODO: might be better to map over #link and do this for every tab.
+    $stale_drafts = $data['tabs'][0]['output'][3]['#link']['description'];
+    $data['tabs'][0]['output'][3]['#link']['localized_options'] = array(
+      'attributes' => array(
+        'title' => $stale_drafts,
+      ),
+    );
+    $stale_reviews  = $data['tabs'][0]['output'][4]['#link']['description'];
+    $data['tabs'][0]['output'][4]['#link']['localized_options'] = array(
+      'attributes' => array(
+        'title' => $stale_reviews,
+      ),
+    );
+  }
+}
+
+/**
  * Implements hook_permission().
  */
 function dkan_workflow_permission() {
