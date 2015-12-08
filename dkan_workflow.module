@@ -99,7 +99,26 @@ function dkan_workflow_views_default_views_alter(&$views) {
 function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && strpos($form_state['view']->name, 'workbench_') === 0) {
     dkan_workflow_limit_workflow_exposed_filter_node_types($form);
+    dkan_workflow_remove_email_errors();
   }
+}
+
+/**
+ * Removes email errors from drupal messages.
+ */
+function dkan_workflow_remove_email_errors() {
+  $messages = drupal_get_messages('error');
+  if ($messages['error']) {
+    $messages['error'] = array_filter($messages['error'], function ($item) {
+      return FALSE === strpos($item, 'email notifications');
+    });
+  }
+
+  $drupal_set_error = function($error) {
+    drupal_set_message($error, 'error');
+  };
+
+  array_map($drupal_set_error, $messages['error']);
 }
 
 /**
@@ -113,6 +132,27 @@ function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
 
   $form['type']['#default_value'] = 'Dataset';
   $form['type']['#validated'] = TRUE;
+}
+
+/**
+ * Implements hook_strongarm_alter().
+ *
+ * dkan_dataset_content_types exports node_options_(dataset|resource). For
+ * dkan_workflow to work we need to remove 'status' and make sure 'moderation'
+ * and 'revision' from the node_options variable.
+ */
+function dkan_workflow_strongarm_alter(&$data) {
+  foreach (array('dataset', 'resource') as $type) {
+    $var_name = 'node_options_' . $type;
+    if (isset($data[$var_name])) {
+      $node_options = $data[$var_name]->value;
+      // Remove status if set
+      $node_options = array_diff($node_options, array('status'));
+      // Add moderation and revision if needed.
+      $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
+      $data[$var_name]->value = $node_options;
+    }
+  }
 }
 
 /**
@@ -163,22 +203,12 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
 }
 
 /**
- * Implements hook_strongarm_alter().
- *
- * dkan_dataset_content_types exports node_options_(dataset|resource). For
- * dkan_workflow to work we need to remove 'status' and make sure 'moderation'
- * and 'revision' from the node_options variable.
+ * Implements hook_mail_alter().
  */
-function dkan_workflow_strongarm_alter(&$data) {
-  foreach (array('dataset', 'resource') as $type) {
-    $var_name = 'node_options_' . $type;
-    if (isset($data[$var_name])) {
-      $node_options = $data[$var_name]->value;
-      // Remove status if set
-      $node_options = array_diff($node_options, array('status'));
-      // Add moderation and revision if needed.
-      $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
-      $data[$var_name]->value = $node_options;
-    }
+function dkan_workflow_mail_alter(&$message) {
+  if (isset($message['id']) && $message['id'] == 'workbench_email_we_transition') {
+    module_load_include('inc', 'dkan_workflow', 'dkan_workflow.email_proxy');
+    $dkan_email_proxy = new DkanWorkflowEmailProxy($message);
+    $message['send'] = $dkan_email_proxy->send();
   }
 }
