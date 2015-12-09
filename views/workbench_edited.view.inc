@@ -105,14 +105,14 @@ $handler->display->display_options['fields']['views_bulk_operations']['vbo_setti
 $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations']['vbo_operations'] = array(
-  'action::views_dkan_workflow_tree_set_moderation_state_action_draft' => array(
+  'action::views_workflow_list_set_moderation_state_action_draft' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Reject',
   ),
-  'action::views_dkan_workflow_tree_set_moderation_state_action_needs_review' => array(
+  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,

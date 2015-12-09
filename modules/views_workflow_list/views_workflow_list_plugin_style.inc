@@ -10,7 +10,7 @@
  *
  * @ingroup views_style_plugins
  */
-class views_dkan_workflow_tree_plugin_style extends views_plugin_style_list {
+class views_workflow_list_plugin_style extends views_plugin_style_list {
 
   /**
    * Set default options
@@ -46,7 +46,7 @@ class views_dkan_workflow_tree_plugin_style extends views_plugin_style_list {
 
     $events = array('click' => t('On Click'), 'mouseover' => t('On Mouseover'));
 
-    // Not applicable for views_dkan_workflow_tree
+    // Not applicable for views_workflow_list
     unset($form['wrapper_class']);
     unset($form['class']);
     unset($form['type']);

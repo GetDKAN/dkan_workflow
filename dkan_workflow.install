@@ -18,34 +18,33 @@ function dkan_workflow_install() {
 
   $item_id = menu_link_save($item);
   dkan_workflow_revert_views();
-
-  // Default content type to show in dkan_workflow.
-  $dkan_workflow_content_types_default = array('dataset', 'resource', 'feedback');
-  variable_set('dkan_workflow_content_types', $dkan_workflow_content_type_default);
 }
 
 /**
  * Implements hook_enable().
  *
- * Enable moderation for dkan_workflow enabled content types upon install. This
- * config is kept persistante using the hook_strongarm_alter().
+ * Enable moderation settings for dataset and resource upon install. This config
+ * updates the node_option_* variables exported by dkan_dataset by removing
+ * conflicting node publishing options and adding required ones to the array.
+ * This update is kept persistante using hook_strongarm_alter().
  */
 function dkan_workflow_enable() {
-  $dkan_workflow_content_types = variable_get('dkan_workflow_content_types', array());
-  foreach ($dkan_workflow_content_types as $type) {
+  foreach (array('dataset', 'resource') as $type) {
     $var_name = 'node_options_' . $type;
+    $options_remove =  array('status');
+    $options_add = array('moderation', 'revision');
+
     $node_options = variable_get($var_name, array());
-    $node_options = $data[$var_name]->value;
-    // Remove status if set
-    $node_options = array_diff($node_options, array('status'));
-    // Add moderation and revision if needed.
-    $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
-    variable_set($var_name, node_options);
+    // Remove conflicting options if set,
+    $node_options = array_diff($node_options, $options_remove);
+    // Add required options if not set.
+    $node_options = array_values(array_unique(array_merge($node_options, $options_add), SORT_REGULAR));
+    variable_set($var_name, $node_options);
   }
 }
 
 /**
- * Make sure the workflow views are reverted.
+ * Implements hook_update_N().
  */
 function dkan_workflow_update_7001() {
   dkan_workflow_revert_views();
@@ -53,9 +52,16 @@ function dkan_workflow_update_7001() {
 }
 
 /**
- * Add support for dkan_workflow enabled content types
+ * Reverts Views.
  */
-function dkan_workflow_update_7002() {
-  $dkan_workflow_content_types_default = array('dataset', 'resource', 'feedback');
-  variable_set('dkan_workflow_content_types', $dkan_workflow_content_types_default);
+function dkan_workflow_revert_views() {
+  ctools_include('object-cache');
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $view->delete();
+      ctools_object_cache_clear('view', $view->name);
+    }
+  }
 }
