@@ -44,10 +44,12 @@ drush en dkan_workflow
 ```
 
 ## Known issues:
+
 * Transitions config and Emails templates for "Original Author" could not be
-  exported due to a bug in workbench_email.
+ exported due to a bug in workbench_email.
 * Behat tests uses [hhs_implementation](https://github.com/NuCivic/dkanextension/tree/hhs_implementation)
-  dkanextension instead of the master branch.
+ dkanextension instead of the master branch.
+* Support for OG while sending emails is supported but not clearly documented.
 
 ## Documentation
 
