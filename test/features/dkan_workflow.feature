@@ -1,188 +1,352 @@
-Feature: Workbench
+Feature:
+  Generic workbench tests for Dkan. This is based on tests written originally for HHS.
 
-  Background:
-    Given pages:
-      | title        | url                          |
-      | Datasets     | dataset                      |
-      | Needs Review | admin/workbench/needs-review |
-      | My drafts    | admin/workbench/drafts       |
-    Given users:
-      | name    | mail             | roles                |
-      | Jeff    | jeff@test.com    | portal administrator |
-      | Gabriel | gabriel@test.com | content editor       |
-      | Katie   | katie@test.com   | workflow contributor     |
-      | Celeste | celeste@test.com | workflow contributor     |
-      | Jaz     | jaz@test.com     | workflow contributor     |
-    And "tags" terms:
-      | name   |
-      | Health |
-      | Gov    |
-    And datasets:
-      | title      | author  | moderation   | date         | tags   |
-      | Dataset 01 | Katie   | draft        | Feb 01, 2015 | Health |
-      | Dataset 02 | Gabriel | published    | Mar 13, 2015 | Gov    |
-      | Dataset 03 | Katie   | published    | Feb 17, 2013 | Health |
-      | Dataset 04 | Celeste | draft        | Jun 21, 2015 | Gov    |
-      | Dataset 05 | Katie   | needs_review | Jun 21, 2015 | Gov    |
-    And "Format" terms:
-      | name  |
-      | csv   |
-    And resources:
-      | title        | author  | dataset    | moderation | format |
-      | Resource 041 | Celeste | Dataset 04 | published  | csv    |
-      | Resource 042 | Celeste | Dataset 04 | published  | csv    |
-      | Resource 051 | Katie   | Dataset 05 | published  | csv    |
-
-  @api
-  Scenario: As a Workflow Contributor I want to moderate my own Datasets
-    Given I am logged in as "Katie"
-    And I am on "Dataset 01" page
-    When I follow "Moderate"
-    Then I should see "Needs Review" in the "#edit-state" element
-    And I should not see "Published" in the "#edit-state" element
-    And I press "Apply"
-    And I should see "Draft --> Needs Review"
-
-  @api
-  Scenario: As a Content Editor I want to Publish datasets posted by a Workflow Contributor
-    Given I am logged in as "Gabriel"
-    And I am on "Dataset 01" page
-    When I follow "Moderate"
-    Then I should see "Needs Review" in the "#edit-state" element
-    When I press "Apply"
-    Then I should see "Draft --> Needs Review"
-    And I should see "Published" in the "#edit-state" element
-    When I press "Apply"
-    Then I should see "Needs Review --> Published"
-    Given I am an anonymous user
-    And I am on "Dataset 01" page
-    Given I should not see the error message "Access denied. You must log in to view this page."
-
-  @api
-  Scenario: As a Portal Administrator I want to moderate all content
-    Given I am logged in as "Jeff"
-    And I am on "Dataset 01" page
-    When I follow "Moderate"
-    Then I should see "Needs Review" in the "#edit-state" element
-    And I should see "Published" in the "#edit-state" element
-    When I follow "Edit draft"
-    And I fill in "Description" with "Dataset 01 edited"
-    And I press "Finish"
-    Then I should see "Dataset Dataset 01 has been updated"
-    Given I am an anonymous user
-    And I am on "Dataset 01" page
-    Given I should not see the error message "Access denied. You must log in to view this page."
-
-  @api
-  Scenario Outline: View 'My workbench' page
-    Given I am logged in as a user with the "<role name>" role
-    Then I should see the link "My Workbench" in the navigation region
-    When I follow "My Workbench"
-    Then I should see "My Content"
-    And I should see "Create content"
-    And I should see "My drafts"
-    And I should see an ".link-badge" element
-    And I should see "Needs review"
-    And I should see an ".link-badge" element
+  @api @disablecaptcha
+  Scenario Outline: As <user>, I <visibility> be able to access My workbench
+    Given Users:
+      | name       | mail                     | status | roles                             |
+      | AUTH       | AUTH@fakeemail.com       | 1      | Authenticated User                |
+      | AUTH-WC    | AUTH-WC@fakeemail.com    | 1      | Workflow Contributor              |
+      | ED         | ED@fakeemail.com         | 1      | Editor                            |
+      | ED-WM      | ED-WM@fakeemail.com      | 1      | Editor, Workflow Moderator        |
+      | SM         | SM@fakeemail.com         | 1      | Site Manager                      |
+      | SM-WS      | SM-WS@fakeemail.com      | 1      | Site Manager, Workflow Supervisor |
+    And I am logged in as "<user>"
+    Then I <visibility> see the link "My Workbench"
 
     Examples:
-      | role name                 |
-      | portal administrator      |
-      | content editor            |
+      | user       | visibility |
+      | AUTH       | should not |
+      | AUTH-WC    | should     |
+      | ED         | should not |
+      | ED-WM      | should     |
+      | SM         | should not |
+      | SM-WS      | should     |
 
-  @api
-  Scenario: View 'My workbench' page for "workflow contributor" role
-    Given I am logged in as a user with the "workflow contributor" role
-    Then I should see the link "My Workbench" in the navigation region
-    When I follow "My Workbench"
-    Then I should see "My Content"
-    And I should see "Create content"
-    And I should see "My drafts"
-    And I should see "Needs review"
+  @api @disablecaptcha
+  Scenario Outline: As a <role>, in Workbench, I <visibility> be able to access <tab>
+    Given pages:
+      | title     | url             |
+      | Workbench | admin/workbench |
+    And I am logged in as an "<role>"
+    And I am on "Workbench" page
+    Then I <visibility> see the link "<tab>"
 
-  @api
-  Scenario: View 'Stale drafts' menu item for "portal administrator" role
-    Given I am logged in as a user with the "portal administrator" role
-    Then I should see the link "My Workbench" in the navigation region
-    When I follow "My Workbench"
-    Then I should see "Stale drafts"
-    And I should see an ".link-badge" element
+    Examples:
+      | role                 | tab           | visibility |
+      | Workflow Contributor | My drafts     | should     |
+      | Workflow Moderator   | My drafts     | should     |
+      | Workflow Supervisor  | My drafts     | should     |
+      | Workflow Contributor | Needs review  | should     |
+      | Workflow Moderator   | Needs review  | should     |
+      | Workflow Supervisor  | Needs review  | should     |
+      | Workflow Contributor | Stale drafts  | should not |
+      | Workflow Moderator   | Stale drafts  | should not |
+      | Workflow Supervisor  | Stale drafts  | should     |
+      | Workflow Contributor | Stale reviews | should not |
+      | Workflow Moderator   | Stale reviews | should not |
+      | Workflow Supervisor  | Stale reviews | should     |
 
-  @api
-  Scenario: View 'Stale reviews' menu item for "portal administrator" role
-    Given I am logged in as a user with the "portal administrator" role
-    Then I should see the link "My Workbench" in the navigation region
-    When I follow "My Workbench"
-    Then I should see "Stale reviews"
-    And I should see an ".link-badge" element
+  @api @disablecaptcha
+  Scenario Outline: As <user>, I should be able to upgrade all draft content to needs review
+    Given Users:
+      | name    | mail                  | status | roles                |
+      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
+      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
+      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
+    And pages:
+      | title     | url                           |
+      | My drafts | admin/workbench/drafts-active |
+    And I am logged in as "<user>"
+    And I am on "My drafts" page
+    Then I should see the button "Submit for review"
 
-  @api @mail
-  Scenario: As a Content Editor I want to receive an email notification when "Workflow Contributor" add a Dataset that "Needs Review".
-    Given I am logged in as "Katie"
-    And I am on "Datasets" page
-    When I click "Add Dataset"
-    And I fill in the following:
-      | Title                     | Dataset That Needs Review |
-      | Description               | Test Behat Dataset 06     |
-      | autocomplete-deluxe-input | Health                    |
-    And I press "Next: Add data"
-    And I fill in the following:
-      | Title                     | Resource 061            |
-      | Description               | Test Behat Resource 061 |
-      | autocomplete-deluxe-input | CSV                     |
-    And I press "Save"
-    Then I should see the success message "Resource Resource 061 has been created."
-    And I click "Back to dataset"
-    Then I follow "Moderate"
-    Then I should see "Needs Review" in the "#edit-state" element
-    And I should not see "Published" in the "#edit-state" element
-    And I press "Apply"
-    And I should see "Draft --> Needs Review"
-    And user Gabriel should receive an email containing "Please review the recent update at"
+    Examples:
+      | user    |
+      | AUTH-WC |
+      | AUTH-WM |
+      | AUTH-WS |
 
-  @api @mail @javascript
-  Scenario: Request dataset review (Change dataset status from 'Draft' to 'Needs review')
-    Given I am logged in as "Celeste"
-    And I follow "My Workbench"
-    And I follow "My drafts"
-    Then I should see "Dataset 04"
-    Given I click "Submit for Review" for "Dataset 04" in the workbench tree
-    Then I should not see "Dataset 04"
-    And the moderation state of node "Dataset 04" of type "Dataset" should be "Needs review"
-    And user Gabriel should receive an email containing "Please review the recent update at"
+  @api @disablecaptcha
+  Scenario Outline: As <user>, I should not be able to upgrade draft content to needs review
+    Given Users:
+      | name    | mail                  | status | roles                |
+      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
+      | ED      | ED@fakeemail.com      | 1      | Editor               |
+      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
+    And pages:
+      | title     | url                           |
+      | My drafts | admin/workbench/drafts-active |
+    And I am logged in as "<user>"
+    And I should not be able to access "My drafts"
 
-  @api @mail @javascript
-  Scenario: As Content Editor Review Dataset (Change dataset status from 'Needs review' to 'Published')
-    Given I am logged in as "Gabriel"
-    And I follow "My Workbench"
-    And I follow "Needs review"
-    And I should see "Dataset 05"
-    Given I click "Publish" for "Dataset 05" in the workbench tree
-    Then I should not see "Dataset 05"
-    And the moderation state of node "Dataset 05" of type "Dataset" should be "Published"
-    And user Katie should receive an email containing "Please review the recent update at"
+    Examples:
+      | user |
+      | AUTH |
+      | ED   |
+      | SM   |
 
-  @api @mail @javascript
-  Scenario: Bulk dataset review requests (Change multiple datasets status from 'Draft' to 'Needs review')
-    Given datasets:
-      | title                  | author | moderation | date         | tags   |
-      | Dataset Bulk update 01 | Jaz    | draft      | Feb 01, 2015 | Health |
-      | Dataset Bulk update 02 | Jaz    | draft      | Mar 13, 2015 | Gov    |
-      | Dataset Bulk update 03 | Jaz    | draft      | Feb 17, 2013 | Health |
+  @api @disablecaptcha
+  Scenario Outline: As <user>, I <visibility> be able to see content in <page> of My Workbench
+    Given groups:
+      | title      |
+      | Smallville |
+      | Star City  |
+      | Bludhaven  |
+      | Coast City |
+    And Users:
+      | name               | mail                             | status | roles                             |
+      | AUTH-WC-Smallville | AUTH-WC-Smallville@fakeemail.com | 1      | Workflow Contributor              |
+      | AUTH-WC-Bludhaven  | AUTH-WC-Bludhaven@fakeemail.com  | 1      | Workflow Contributor              |
+      | ED-WM-Smallville   | ED-WM-Smallville@fakeemail.com   | 1      | Editor, Workflow Moderator        |
+      | ED-WM-Bludhaven    | ED-WM-Bludhaven@fakeemail.com    | 1      | Editor, Workflow Moderator        |
+      | SM-WS-Smallville   | SM-WS-Smallville@fakeemail.com   | 1      | Site Manager, Workflow Supervisor |
+      | SM-WS-Bludhaven    | SM-WS-Bludhaven@fakeemail.com    | 1      | Site Manager, Workflow Supervisor |
+      | SM                 | SM-NoGroup@fakeemail.com         | 1      | Site Manager, Workflow Supervisor |
+    And group memberships:
+      | user               | role on group        | group      | membership status |
+      | AUTH-WC-Smallville | member               | Smallville | Active            |
+      | AUTH-WC-Bludhaven  | member               | Bludhaven  | Active            |
+      | ED-WM-Smallville   | administrator member | Smallville | Active            |
+      | ED-WM-Bludhaven    | administrator member | Bludhaven  | Active            |
+      | SM-WS-Smallville   | administrator member | Smallville | Active            |
+      | SM-WS-Bludhaven    | administrator member | Bludhaven  | Active            |
+    And datasets:
+      | title                           | author             | moderation   | moderation_date   | date created  | publisher  |
+      | Smallville Draft Dataset        | AUTH-WC-Smallville | draft        | Jul 21, 2015      | Jul 21, 2015  | Smallville |
+      | Smallville Needs Review Dataset | AUTH-WC-Smallville | needs_review | Jul 21, 2015      | Jul 21, 2015  | Smallville |
+      | Smallville Published Dataset    | AUTH-WC-Smallville | published    | Jul 21, 2014      | Jul 21, 2015  | Smallville |
+      | Bludhaven Draft Dataset         | AUTH-WC-Bludhaven  | draft        | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
+      | Bludhaven Needs Review Dataset  | AUTH-WC-Bludhaven  | needs_review | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
+      | Bludhaven Published Dataset     | AUTH-WC-Bludhaven  | published    | Jul 21, 2014      | Jul 21, 2015  | Bludhaven  |
+      | Bludhaven Published Dataset 2   | AUTH-WC-Bludhaven  | published    | Jul 21, 2014      | Jul 21, 2015  | Bludhaven  |
     And resources:
-      | title                    | author | dataset                | moderation | format |
-      | Resource Bulk update 011 | Jaz    | Dataset Bulk update 01 | draft  | csv    |
-      | Resource Bulk update 012 | Jaz    | Dataset Bulk update 01 | draft  | csv    |
-      | Resource Bulk update 021 | Jaz    | Dataset Bulk update 02 | draft  | csv    |
-      | Resource Bulk update 022 | Jaz    | Dataset Bulk update 02 | draft  | csv    |
-      | Resource Bulk update 031 | Jaz    | Dataset Bulk update 03 | draft  | csv    |
-      | Resource Bulk update 032 | Jaz    | Dataset Bulk update 03 | draft  | csv    |
-    Given I am logged in as "Jaz"
-    And I follow "My Workbench"
-    And I follow "My drafts"
-    Then the workbench tree should contain 9 elements
-    Given I set all the elements in the workbench tree to "Submit for review"
-    And I wait for '5' seconds
-    Then I should see the success message "Performed Submit for review on 9 items."
-    And the workbench tree should contain 0 elements
+      | title                                        | dataset                        | author             | moderation   | format | groups audience  | moderation_date   |
+      | Smallville Draft-Draft Resource              | Smallville Draft Dataset       | AUTH-WC-Smallville | draft        | csv    | Smallville       | Jul 21, 2015      |
+      | Smallville Draft-Needs Review Resource       | Smallville Draft Dataset       | AUTH-WC-Smallville | needs_review | csv    | Smallville       | Jul 21, 2015      |
+      | Smallville Draft-Published Resource          | Smallville Draft Dataset       | AUTH-WC-Smallville | published    | csv    | Smallville       | Jul 21, 2015      |
+      | Bludhaven Needs Review-Draft Resource        | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | draft        | csv    | Bludhaven        | Jul 21, 2015      |
+      | Bludhaven Needs Review-Needs Review Resource | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | needs_review | csv    | Bludhaven        | Jul 21, 2015      |
+      | Bludhaven Needs Review-Published Resource    | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | published    | csv    | Bludhaven        | Jul 21, 2015      |
+      | Bludhaven Published-Needs Review Resource    | Bludhaven Published Dataset    | AUTH-WC-Bludhaven  | needs_review | csv    | Bludhaven        | Jul 21, 2015      |
+    And pages:
+      | title         | url                                 |
+      | My drafts     | admin/workbench/drafts-active       |
+      | Needs review  | admin/workbench/needs-review-active |
+      | Stale drafts  | admin/workbench/drafts-stale        |
+      | Stale reviews | admin/workbench/needs-review-stale  |
+    And I am logged in as "<user>"
+    And I am on "<page>" page
+    Then I <visibility> see the text "<title>"
 
+    Examples:
+      | user               | page          | visibility | title                                        |
+      | AUTH-WC-Smallville | My drafts     | should     | Smallville Draft Dataset                     |
+      | AUTH-WC-Smallville | My drafts     | should not | Bludhaven Draft Dataset                      |
+      | AUTH-WC-Smallville | My drafts     | should not | Smallville Needs Review Dataset              |
+      | AUTH-WC-Smallville | My drafts     | should not | Smallville Published Dataset                 |
+      | AUTH-WC-Smallville | My drafts     | should     | Smallville Draft-Draft Resource              |
+      | AUTH-WC-Smallville | My drafts     | should not | Smallville Draft-Needs Review Resource       |
+      | AUTH-WC-Smallville | My drafts     | should not | Smallville Draft-Published Resource          |
+      | AUTH-WC-Smallville | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
+      | AUTH-WC-Smallville | Needs review  | should     | Smallville Needs Review Dataset              |
+      | AUTH-WC-Smallville | Needs review  | should not | Smallville Published Dataset                 |
+      | AUTH-WC-Smallville | Needs review  | should not | Bludhaven Needs Review Dataset               |
+      | AUTH-WC-Smallville | Needs review  | should not | Bludhaven Needs Review-Needs Review Resource |
+      | AUTH-WC-Smallville | Needs review  | should     | Smallville Draft-Needs Review Resource       |
+      | AUTH-WC-Smallville | Needs review  | should not | Smallville Draft-Published Resource          |
+      | ED-WM-Smallville   | My drafts     | should not | Smallville Draft Dataset                     |
+      | ED-WM-Smallville   | My drafts     | should not | Bludhaven Draft Dataset                      |
+      | ED-WM-Smallville   | My drafts     | should not | Smallville Draft-Draft Resource              |
+      | ED-WM-Smallville   | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
+      | ED-WM-Bludhaven    | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
+      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Needs Review Dataset               |
+      | ED-WM-Bludhaven    | Needs review  | should not | Bludhaven Needs Review-Draft Resource        |
+      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
+      | ED-WM-Bludhaven    | Needs review  | should not | Smallville Needs Review Dataset              |
+      | ED-WM-Bludhaven    | Needs review  | should not | Smallville Draft Dataset                     |
+      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Published-Needs Review Resource    |
+      | ED-WM-Bludhaven    | Needs review  | should not | Bludhaven Published Dataset 2                |
+      | SM-WS-Smallville   | My drafts     | should not | Smallville Draft Dataset                     |
+      | SM-WS-Smallville   | Needs review  | should     | Smallville Needs Review Dataset              |
+      | SM-WS-Smallville   | Needs review  | should     | Bludhaven Needs Review Dataset               |
+      | SM-WS-Smallville   | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
+      | SM-WS-Smallville   | Stale drafts  | should     | Bludhaven Draft Dataset                      |
+      | SM-WS-Smallville   | Stale drafts  | should     | Smallville Draft Dataset                     |
+      | SM-WS-Smallville   | Stale reviews | should     | Bludhaven Needs Review Dataset               |
+      | SM-WS-Smallville   | Stale reviews | should     | Smallville Needs Review Dataset              |
+      | SM                 | My drafts     | should not | Smallville Draft Dataset                     |
+      | SM                 | Needs review  | should     | Smallville Needs Review Dataset              |
+      | SM                 | Needs review  | should     | Bludhaven Needs Review Dataset               |
+      | SM                 | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
+      | SM                 | Stale drafts  | should     | Bludhaven Draft Dataset                      |
+      | SM                 | Stale drafts  | should     | Smallville Draft Dataset                     |
+      | SM                 | Stale reviews | should     | Bludhaven Needs Review Dataset               |
+      | SM                 | Stale reviews | should     | Smallville Needs Review Dataset              |
+
+  @api @disablecaptcha
+  Scenario Outline: As a role, I should be able to upgrade all content to published
+    Given groups:
+      | title      |
+      | Coast City |
+    And Users:
+      | name    | mail                  | status | roles                |
+      | AUTH-GA | AUTH-GA@fakeemail.com | 1      | Authenticated User   |
+      | AUTH-GM | AUTH-GM@fakeemail.com | 1      | Authenticated User   |
+      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
+      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
+      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
+      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
+      | ED      | ED@fakeemail.com      | 1      | Editor               |
+      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
+    And group memberships:
+      | user    | role on group        | group      | membership status |
+      | AUTH-GA | administrator member | Coast City | Active            |
+      | AUTH-GM | member               | Coast City | Active            |
+    And datasets:
+      | title      | author  | moderation   | moderation_date   | date created | publisher  |
+      | Dataset 04 | AUTH-GA | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 08 | AUTH-GM | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 09 | AUTH-WC | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 10 | AUTH-WM | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 11 | AUTH-WS | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 12 | AUTH    | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 16 | AUTH-GA | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 20 | AUTH-GM | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 21 | AUTH-WC | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 22 | AUTH-WM | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 23 | AUTH-WS | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 24 | AUTH    | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 28 | AUTH-GA | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 32 | AUTH-GM | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 33 | AUTH-WC | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 34 | AUTH-WM | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 35 | AUTH-WS | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 36 | AUTH    | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+    And pages:
+      | title        | url                                 |
+      | My drafts    | admin/workbench/drafts-active       |
+      | Needs review | admin/workbench/needs-review-active |
+    And I am logged in as "<user>"
+    And I am on "<page>" page
+    Then I should see "<count>" items of ".views-dkan-workflow-tree-item" or more in the "dkan_workflow_tree" region
+
+    Examples:
+      | user    | page         | count |
+      | AUTH-WC | My drafts    | 1     |
+      | AUTH-WM | My drafts    | 1     |
+      | AUTH-WS | My drafts    | 1     |
+      | AUTH-WC | Needs review | 1     |
+      | AUTH-WM | Needs review | 1     |
+      | AUTH-WS | Needs review | 6     |
+
+  @api @disablecaptcha
+  Scenario Outline: As a role, I should not be able to upgrade all content to published
+    Given groups:
+      | title      |
+      | Coast City |
+    And Users:
+      | name    | mail                  | status | roles                |
+      | AUTH-GA | AUTH-GA@fakeemail.com | 1      | Authenticated User   |
+      | AUTH-GM | AUTH-GM@fakeemail.com | 1      | Authenticated User   |
+      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
+      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
+      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
+      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
+      | ED      | ED@fakeemail.com      | 1      | Editor               |
+      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
+    And group memberships:
+      | user    | role on group        | group      | membership status |
+      | AUTH-GA | administrator member | Coast City | Active            |
+      | AUTH-GM | member               | Coast City | Active            |
+    And datasets:
+      | title      | author  | moderation   | moderation_date   | date created | publisher  |
+      | Dataset 04 | AUTH-GA | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 08 | AUTH-GM | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 09 | AUTH-WC | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 10 | AUTH-WM | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 11 | AUTH-WS | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 12 | AUTH    | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 16 | AUTH-GA | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 20 | AUTH-GM | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 21 | AUTH-WC | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 22 | AUTH-WM | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 23 | AUTH-WS | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 24 | AUTH    | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 28 | AUTH-GA | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 32 | AUTH-GM | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
+      | Dataset 33 | AUTH-WC | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 34 | AUTH-WM | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 35 | AUTH-WS | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+      | Dataset 36 | AUTH    | published    | Jul 21, 2015      | Jul 21, 2015 |            |
+    And pages:
+      | title        | url                                 |
+      | My drafts    | admin/workbench/drafts-active       |
+      | Needs review | admin/workbench/needs-review-active |
+    And I am logged in as "<user>"
+    And I should not be able to access "<page>"
+
+    Examples:
+      | user    | page         |
+      | AUTH-GA | My drafts    |
+      | AUTH-GM | My drafts    |
+      | AUTH    | My drafts    |
+      | ED      | My drafts    |
+      | SM      | My drafts    |
+      | AUTH-GA | Needs review |
+      | AUTH-GM | Needs review |
+      | AUTH    | Needs review |
+      | ED      | Needs review |
+      | SM      | Needs review |
+
+  @api @disablecaptcha @mail
+  Scenario Outline: As a user, I should/should not receive an email on content moderation state change
+    Given groups:
+      | title       |
+      | Smallville  |
+      | Bludhaven   |
+    And users:
+      | name      | mail                          | status  | roles                 |
+      | Robin     | robin@teentitans.org          | 1       | Workflow Contributor  |
+      | Spoiler   | stephanie.brown@yahoo.com     | 0       | Workflow Contributor  |
+      | Nightwing | acrobatman@bludhaven.com      | 1       | Workflow Moderator    |
+      | Batgirl   | silenceisgolden@bludhaven.com | 1       | Workflow Moderator    |
+      | Oracle    | iseeall@clocktower.org        | 1       | Workflow Supervisor   |
+      | Superboy  | konel@teentitans.org          | 1       | Workflow Contributor  |
+      | Ma Kent   | supermom@smallville.com       | 1       | Workflow Moderator    |
+      | Pa Kent   | superdad@smallville.com       | 1       | Workflow Moderator    |
+      | Superman  | Superman@fakeemail.com        | 1       | Authenticated User    |
+    And group memberships:
+      | user      | role on group         | group       | membership status |
+      | Robin     | member                | Bludhaven   | Active            |
+      | Spoiler   | member                | Bludhaven   | Active            |
+      | Nightwing | member                | Bludhaven   | Active            |
+      | Batgirl   | member                | Bludhaven   | Active            |
+      | Oracle    | administrator member  | Bludhaven   | Active            |
+      | Superboy  | member                | Smallville  | Active            |
+      | Ma Kent   | member                | Smallville  | Active            |
+      | Pa Kent   | member                | Smallville  | Blocked           |
+    And datasets:
+      | title                             | author    | moderation    | publisher   | moderation_date   | date created |
+      | Smallville Dataset Draft          | Superboy  | draft         | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
+      | Smallville Dataset Needs Review   | Pa Kent   | needs_review  | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
+      | Dataset 01                        | Oracle    | draft         | Bludhaven   | Jul 21, 2015      | Jul 21, 2015 |
+      | Dataset 02                        | Superboy  | needs_review  | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
+      | Dataset 03                        | Superman  | draft         |             | Jul 21, 2015      | Jul 21, 2015 |
+    And pages:
+      | title            | url                                 |
+      | My drafts        | admin/workbench/drafts-active       |
+      | Needs review     | admin/workbench/needs-review-active |
+    And I am logged in as "<moderator>"
+    And I am on "<workbench tab>" page
+    And I click the "<link>" next to "<content title>"
+    Then the user "<user>" <visibility> receive an email
+
+    Examples:
+      | moderator | workbench tab | link              | content title                     | user      | visibility  |
+      | Ma Kent   | Needs review  | Reject            | Smallville Dataset Needs Review   | Pa Kent   | should      |
+      | Ma Kent   | Needs review  | Reject            | Smallville Dataset Needs Review   | Ma Kent   | should not  |
+      | Ma Kent   | Needs review  | Publish           | Smallville Dataset Needs Review   | Pa Kent   | should      |
+      | Ma Kent   | Needs review  | Publish           | Smallville Dataset Needs Review   | Ma Kent   | should not  |
+      | Superboy  | My drafts     | Submit for Review | Smallville Dataset Draft          | Ma Kent   | should      |
+      | Superboy  | My drafts     | Submit for Review | Smallville Dataset Draft          | Pa Kent   | should not  |
