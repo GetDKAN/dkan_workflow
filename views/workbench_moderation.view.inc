@@ -20,6 +20,7 @@ $handler->display->display_options['cache']['type'] = 'none';
 $handler->display->display_options['query']['type'] = 'views_query';
 $handler->display->display_options['query']['options']['query_comment'] = FALSE;
 $handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['exposed_form']['options']['reset_button'] = TRUE;
 $handler->display->display_options['pager']['type'] = 'full';
 $handler->display->display_options['pager']['options']['items_per_page'] = '25';
 $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -61,167 +62,12 @@ $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_set
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
-  'action::node_assign_owner_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_item' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_revision' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_script_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_sticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_unsticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_modify_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'show_all_tokens' => 1,
-      'display_values' => array(
-        '_all_' => '_all_',
-      ),
-    ),
-  ),
-  'action::views_bulk_operations_argument_selector_action' => array(
-    'selected' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'url' => '',
-    ),
-  ),
-  'action::node_promote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_publish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpromote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_save_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::system_send_email_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::workbench_moderation_set_state_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::panelizer_set_status_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'rules_component::rules_test_set' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_by_keyword_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::pathauto_node_update_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_draft' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 1,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_needs_review' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Submit for review',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_published' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
   ),
 );
 /* Field: Content revision: Vid */
@@ -254,17 +100,6 @@ $handler->display->display_options['filters']['title']['expose']['label'] = 'Tit
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-/* Filter criterion: Content: Type */
-$handler->display->display_options['filters']['type']['id'] = 'type';
-$handler->display->display_options['filters']['type']['table'] = 'node';
-$handler->display->display_options['filters']['type']['field'] = 'type';
-$handler->display->display_options['filters']['type']['relationship'] = 'nid';
-$handler->display->display_options['filters']['type']['exposed'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
 /* Filter criterion: Workbench Moderation: State */
 $handler->display->display_options['filters']['state']['id'] = 'state';
 $handler->display->display_options['filters']['state']['table'] = 'workbench_moderation_node_history';
@@ -315,167 +150,12 @@ $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_set
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
-  'action::node_assign_owner_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_item' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_revision' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_script_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_sticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_unsticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_modify_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'show_all_tokens' => 1,
-      'display_values' => array(
-        '_all_' => '_all_',
-      ),
-    ),
-  ),
-  'action::views_bulk_operations_argument_selector_action' => array(
-    'selected' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'url' => '',
-    ),
-  ),
-  'action::node_promote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_publish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpromote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_save_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::system_send_email_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::workbench_moderation_set_state_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::panelizer_set_status_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'rules_component::rules_test_set' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_by_keyword_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::pathauto_node_update_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_draft' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_needs_review' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Submit for review',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_published' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
   ),
 );
 /* Field: Content revision: Vid */
@@ -520,23 +200,28 @@ $handler->display->display_options['filters']['title']['expose']['label'] = 'Tit
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-/* Filter criterion: Content: Type */
-$handler->display->display_options['filters']['type']['id'] = 'type';
-$handler->display->display_options['filters']['type']['table'] = 'node';
-$handler->display->display_options['filters']['type']['field'] = 'type';
-$handler->display->display_options['filters']['type']['relationship'] = 'nid';
-$handler->display->display_options['filters']['type']['value'] = array(
-  'dataset' => 'dataset',
-  'resource' => 'resource',
+/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['relationship'] = 'nid';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['exposed'] = TRUE;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator_id'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['label'] = 'Groups';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['identifier'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  210394380 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+  57821158 => 0,
 );
-$handler->display->display_options['filters']['type']['exposed'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember_roles'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['reduce'] = TRUE;
-
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
 $handler->display->display_options['path'] = 'admin/workbench/drafts-active';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'My drafts';
@@ -576,162 +261,14 @@ $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_set
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
-  'action::node_assign_owner_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_item' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_revision' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_script_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_sticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_unsticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_modify_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'show_all_tokens' => 1,
-      'display_values' => array(
-        '_all_' => '_all_',
-      ),
-    ),
-  ),
-  'action::views_bulk_operations_argument_selector_action' => array(
-    'selected' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'url' => '',
-    ),
-  ),
-  'action::node_promote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_publish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpromote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_save_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::system_send_email_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::workbench_moderation_set_state_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::panelizer_set_status_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'rules_component::rules_test_set' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_by_keyword_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::pathauto_node_update_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_draft' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_draft' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Reject',
   ),
-  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 1,
-    'label' => 'Submit for review',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_published' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_published' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
@@ -752,6 +289,7 @@ $handler->display->display_options['filters']['is_current']['id'] = 'is_current'
 $handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
 $handler->display->display_options['filters']['is_current']['field'] = 'is_current';
 $handler->display->display_options['filters']['is_current']['value'] = '1';
+$handler->display->display_options['filters']['is_current']['group'] = 1;
 /* Filter criterion: Workbench Moderation: State */
 $handler->display->display_options['filters']['state']['id'] = 'state';
 $handler->display->display_options['filters']['state']['table'] = 'workbench_moderation_node_history';
@@ -759,6 +297,7 @@ $handler->display->display_options['filters']['state']['field'] = 'state';
 $handler->display->display_options['filters']['state']['value'] = array(
   'needs_review' => 'needs_review',
 );
+$handler->display->display_options['filters']['state']['group'] = 1;
 $handler->display->display_options['filters']['state']['expose']['label'] = 'Workbench Moderation: State';
 $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
 $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
@@ -768,23 +307,36 @@ $handler->display->display_options['filters']['title']['table'] = 'node';
 $handler->display->display_options['filters']['title']['field'] = 'title';
 $handler->display->display_options['filters']['title']['relationship'] = 'nid';
 $handler->display->display_options['filters']['title']['operator'] = 'contains';
+$handler->display->display_options['filters']['title']['group'] = 1;
 $handler->display->display_options['filters']['title']['exposed'] = TRUE;
 $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['label'] = 'Title';
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-/* Filter criterion: Content: Type */
-$handler->display->display_options['filters']['type']['id'] = 'type';
-$handler->display->display_options['filters']['type']['table'] = 'node';
-$handler->display->display_options['filters']['type']['field'] = 'type';
-$handler->display->display_options['filters']['type']['relationship'] = 'nid';
-$handler->display->display_options['filters']['type']['exposed'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
+/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['relationship'] = 'nid';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['group'] = 1;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['exposed'] = TRUE;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator_id'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['label'] = 'Groups';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['identifier'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  210394380 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+  57821158 => 0,
+);
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
 $handler->display->display_options['path'] = 'admin/workbench/needs-review-active';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Needs review';
@@ -824,162 +376,14 @@ $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_set
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
-  'action::node_assign_owner_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_item' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_revision' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_script_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_sticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_unsticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_modify_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'show_all_tokens' => 1,
-      'display_values' => array(
-        '_all_' => '_all_',
-      ),
-    ),
-  ),
-  'action::views_bulk_operations_argument_selector_action' => array(
-    'selected' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'url' => '',
-    ),
-  ),
-  'action::node_promote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_publish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpromote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_save_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::system_send_email_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::workbench_moderation_set_state_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::panelizer_set_status_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'rules_component::rules_test_set' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_by_keyword_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::pathauto_node_update_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_draft' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_draft' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Reject',
   ),
-  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 1,
-    'label' => 'Submit for review',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_published' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_published' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
@@ -1022,17 +426,6 @@ $handler->display->display_options['filters']['title']['expose']['label'] = 'Tit
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-/* Filter criterion: Content: Type */
-$handler->display->display_options['filters']['type']['id'] = 'type';
-$handler->display->display_options['filters']['type']['table'] = 'node';
-$handler->display->display_options['filters']['type']['field'] = 'type';
-$handler->display->display_options['filters']['type']['relationship'] = 'nid';
-$handler->display->display_options['filters']['type']['exposed'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
 /* Filter criterion: Workbench Moderation: Timestamp */
 $handler->display->display_options['filters']['stamp']['id'] = 'stamp';
 $handler->display->display_options['filters']['stamp']['table'] = 'workbench_moderation_node_history';
@@ -1040,6 +433,28 @@ $handler->display->display_options['filters']['stamp']['field'] = 'stamp';
 $handler->display->display_options['filters']['stamp']['operator'] = '<';
 $handler->display->display_options['filters']['stamp']['value']['value'] = '-72 hours';
 $handler->display->display_options['filters']['stamp']['value']['type'] = 'offset';
+/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['relationship'] = 'nid';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['exposed'] = TRUE;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator_id'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['label'] = 'Groups';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['identifier'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  210394380 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+  57821158 => 0,
+);
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
 $handler->display->display_options['path'] = 'admin/workbench/drafts-stale';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Stale drafts';
@@ -1080,162 +495,14 @@ $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_set
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
 $handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
-  'action::node_assign_owner_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_item' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_delete_revision' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_script_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_sticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_make_unsticky_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_bulk_operations_modify_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'show_all_tokens' => 1,
-      'display_values' => array(
-        '_all_' => '_all_',
-      ),
-    ),
-  ),
-  'action::views_bulk_operations_argument_selector_action' => array(
-    'selected' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-    'settings' => array(
-      'url' => '',
-    ),
-  ),
-  'action::node_promote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_publish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpromote_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_save_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::system_send_email_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::workbench_moderation_set_state_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::panelizer_set_status_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'rules_component::rules_test_set' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::node_unpublish_by_keyword_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::pathauto_node_update_action' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 0,
-    'override_label' => 0,
-    'label' => '',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_draft' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_draft' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
     'override_label' => 1,
     'label' => 'Reject',
   ),
-  'action::views_workflow_list_set_moderation_state_action_needs_review' => array(
-    'selected' => 0,
-    'postpone_processing' => 0,
-    'skip_confirmation' => 1,
-    'override_label' => 1,
-    'label' => 'Submit for review',
-  ),
-  'action::views_workflow_list_set_moderation_state_action_published' => array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_published' => array(
     'selected' => 1,
     'postpone_processing' => 0,
     'skip_confirmation' => 1,
@@ -1278,17 +545,6 @@ $handler->display->display_options['filters']['title']['expose']['label'] = 'Tit
 $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
 $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
 $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-/* Filter criterion: Content: Type */
-$handler->display->display_options['filters']['type']['id'] = 'type';
-$handler->display->display_options['filters']['type']['table'] = 'node';
-$handler->display->display_options['filters']['type']['field'] = 'type';
-$handler->display->display_options['filters']['type']['relationship'] = 'nid';
-$handler->display->display_options['filters']['type']['exposed'] = TRUE;
-$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-$handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
 /* Filter criterion: Workbench Moderation: Timestamp */
 $handler->display->display_options['filters']['stamp']['id'] = 'stamp';
 $handler->display->display_options['filters']['stamp']['table'] = 'workbench_moderation_node_history';
@@ -1296,6 +552,28 @@ $handler->display->display_options['filters']['stamp']['field'] = 'stamp';
 $handler->display->display_options['filters']['stamp']['operator'] = '<';
 $handler->display->display_options['filters']['stamp']['value']['value'] = '-48 hours';
 $handler->display->display_options['filters']['stamp']['value']['type'] = 'offset';
+/* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['relationship'] = 'nid';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['exposed'] = TRUE;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator_id'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['label'] = 'Groups';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['identifier'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  210394380 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+  57821158 => 0,
+);
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
 $handler->display->display_options['path'] = 'admin/workbench/needs-review-stale';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Stale reviews';
@@ -1477,6 +755,7 @@ $handler->display->display_options['fields']['vid']['relationship'] = 'nid';
 $handler->display->display_options['fields']['vid']['group_type'] = 'count_distinct';
 $handler->display->display_options['fields']['vid']['label'] = '';
 $handler->display->display_options['fields']['vid']['element_label_colon'] = FALSE;
+/* Filter criterion: Broken/missing handler */
 $handler->display->display_options['filters']['uid_current']['group'] = 1;
 /* Filter criterion: Workbench Moderation: Current */
 $handler->display->display_options['filters']['is_current']['id'] = 'is_current';
@@ -1500,4 +779,3 @@ $handler->display->display_options['filters']['stamp']['operator'] = '<';
 $handler->display->display_options['filters']['stamp']['value']['value'] = '-48 hours';
 $handler->display->display_options['filters']['stamp']['value']['type'] = 'offset';
 $handler->display->display_options['filters']['stamp']['group'] = 1;
-

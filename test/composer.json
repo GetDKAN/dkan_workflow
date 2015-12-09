@@ -1,8 +1,11 @@
 {
-    "require": {
-        "drupal/drupal-extension": "~3.0"
-    },
-    "config": {
-        "bin-dir": "bin/"
-    }
+  "require": {
+    "drupal/drupal-extension": "~3.0",
+    "phpunit/phpunit": "4.6.*",
+    "myplanetdigital/function_mock": "dev-master",
+    "drupal/drupal-driver": "~1.0"
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
 }
