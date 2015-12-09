@@ -108,17 +108,15 @@ function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
  */
 function dkan_workflow_remove_email_errors() {
   $messages = drupal_get_messages('error');
-  if ($messages['error']) {
+  if (array_key_exists('error', $messages)) {
     $messages['error'] = array_filter($messages['error'], function ($item) {
       return FALSE === strpos($item, 'email notifications');
     });
+    $drupal_set_error = function($error) {
+      drupal_set_message($error, 'error');
+    };
+    array_map($drupal_set_error, $messages['error']);
   }
-
-  $drupal_set_error = function($error) {
-    drupal_set_message($error, 'error');
-  };
-
-  array_map($drupal_set_error, $messages['error']);
 }
 
 /**
