@@ -43,6 +43,12 @@ drush make --no-core <path to modules directory>/dkan_workflow/dkan_workflow.mak
 drush en dkan_workflow
 ```
 
+## Known issues:
+* Transitions config and Emails templates for "Original Author" could not be
+  exported due to a bug in workbench_email.
+* Behat tests uses [hhs_implementation](https://github.com/NuCivic/dkanextension/tree/hhs_implementation)
+  dkanextension instead of the master branch.
+
 ## Documentation
 
 We are working on improving this documentation. Please let us know if you have
