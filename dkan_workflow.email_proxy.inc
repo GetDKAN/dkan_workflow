@@ -49,7 +49,7 @@ class DkanWorkflowEmailProxy {
     if (user_has_role($this->roles['Workflow Moderator'], $this->user)) {
       $user_groups = og_get_entity_groups('user', $this->user);
       $node_groups = og_get_entity_groups('node', $this->node);
-      $intersect = array_intersect($user_groups, $node_groups);
+      $intersect = array_intersect($user_groups['node'], $node_groups['node']);
       return !empty($intersect);
     }
     return FALSE;

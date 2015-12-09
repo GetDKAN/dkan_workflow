@@ -70,8 +70,6 @@ before_script:
 
 script:
   - bin/behat features/data_workflow.feature
-  - bin/phpunit phpunit/DkanWorkflowEmailTransition.php
-  - bin/phpunit phpunit/DkanWorkflowTest.php
 
 notifications:
   slack:

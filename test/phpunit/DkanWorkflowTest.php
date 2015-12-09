@@ -13,6 +13,8 @@ class DkanWorkflowBaseTest extends PHPUnit_Framework_TestCase {
 
   /**
    * Verify that email errors get removed from messages.
+   *
+   * @covers dkan_workflow().
    */
   public function testDkanWorlflowRemoveEmailErrors() {
     // When no email error.
@@ -44,4 +46,6 @@ class DkanWorkflowBaseTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($actual, $expected);
   }
 
+  public function testGetEmailReceiverUser() {
+  }
 }

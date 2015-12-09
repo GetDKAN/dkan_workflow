@@ -87,7 +87,7 @@ function dkan_workflow_views_default_views_alter(&$views) {
   $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
   foreach ($files as $filepath => $file) {
     require $filepath;
-    if (isset($view) && array_key_exists($view->name, $views)) {
+    if (isset($views[$view->name])) {
       $views[$view->name] = $view;
     }
   }
@@ -126,8 +126,13 @@ function dkan_workflow_remove_email_errors() {
  */
 function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
   $options = $form['type']['#options'];
-  $form['type']['#options'] = array_filter($options, function($type) {
-    return in_array($type, array('- Any -', 'Dataset', 'Resource'));
+  $form['type']['#options'] = array_filter($options, function($option) {
+    // This wont work correctly if put outside of the scope of this callback.
+    $dkan_workflow_content_types_names = array_map(function($type){
+      return node_type_get_name($type);
+    }, variable_get('dkan_workflow_content_types', array()));
+    $allowed_types = array_merge(array('- Any -'), $dkan_workflow_content_types_names);
+    return in_array($option, $allowed_types);
   });
 
   $form['type']['#default_value'] = 'Dataset';
@@ -142,7 +147,8 @@ function dkan_workflow_limit_workflow_exposed_filter_node_types(&$form) {
  * and 'revision' from the node_options variable.
  */
 function dkan_workflow_strongarm_alter(&$data) {
-  foreach (array('dataset', 'resource') as $type) {
+  $dkan_workflow_content_types = variable_get('dkan_workflow_content_types', array());
+  foreach ($dkan_workflow_content_types as $type) {
     $var_name = 'node_options_' . $type;
     if (isset($data[$var_name])) {
       $node_options = $data[$var_name]->value;
@@ -164,42 +170,114 @@ function dkan_workflow_strongarm_alter(&$data) {
  * Ref. NuCivic/healthdata#487
  */
 function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
-  $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
-  $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+  // Filter by dkan_workflow enabled content type.
 
-  // On the Needs Review tab, Workflow Moderator can see only content submitted to
-  // their organic group.
-  if (user_has_role($role_workflow_moderator->rid)
-    && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
-      // Contextual filter: OG membership: Group ID
-      $og_membership = array();
-      $og_membership['table'] = 'og_membership';
-      $og_membership['field'] = 'gid';
-      $og_membership['relationship'] = 'nid';
-      $og_membership['default_action'] = 'default';
-      $og_membership['default_argument_type'] = 'og_user_groups';
-      $og_membership['summary']['number_of_records'] = '0';
-      $og_membership['summary']['format'] = 'default_summary';
-      $og_membership['summary_options']['items_per_page'] = '25';
-      $og_membership['break_phrase'] = TRUE;
+  if ($view->name == 'workbench_moderation') {
+    // Filter by dkan_workflow enabled content types.
+    // A better place for this filter is a function with cache suppor like
+    // hook_views_default_views_alter(). But to make it esiear for dev to add
+    // changes to the code we opted to put it here.
+    $filter_content_type_value = array();
+    foreach(variable_get('dkan_workflow_content_types', array()) as $value) {
+      $filter_content_type_value[$value] = $value;
+    }
 
-      $view->set_item($display_id, 'argument', 'gid', $og_membership);
+    $filter_content_type['id'] = 'type';
+    $filter_content_type['table'] = 'node';
+    $filter_content_type['field'] = 'type';
+    $filter_content_type['relationship'] = 'nid';
+    $filter_content_type['exposed'] = TRUE;
+    $filter_content_type['expose']['operator_id'] = 'type_op';
+    $filter_content_type['expose']['label'] = 'Type';
+    $filter_content_type['expose']['operator'] = 'type_op';
+    $filter_content_type['expose']['identifier'] = 'type';
+    $filter_content_type['expose']['remember'] = TRUE;
+    $filter_content_type['value'] = $filter_content_type_value;;
+    $filter_content_type['expose']['remember_roles'] = TRUE;
+    $filter_content_type['expose']['reduce'] = TRUE;
+
+    $item = $view->set_item($display_id, 'filter', 'type', $filter_content_type);
+
+    $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
+    $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+
+    // On the Needs Review tab, Workflow Moderator can see:
+    // - the content submitted to their organic group.
+    // - Thier own content.
+    if (user_has_role($role_workflow_moderator->rid)
+      && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+        // Contextual filter: OG membership: Group ID
+        $og_membership = array();
+        $og_membership['table'] = 'og_membership';
+        $og_membership['field'] = 'gid';
+        $og_membership['relationship'] = 'nid';
+        $og_membership['default_action'] = 'default';
+        $og_membership['default_argument_type'] = 'og_user_groups';
+        $og_membership['summary']['number_of_records'] = '0';
+        $og_membership['summary']['format'] = 'default_summary';
+        $og_membership['summary_options']['items_per_page'] = '25';
+        $og_membership['break_phrase'] = TRUE;
+
+        $view->set_item($display_id, 'argument', 'gid', $og_membership);
+
+        // Contextual filter: Content: Author uid
+        $author_uid['table'] = 'node';
+        $author_uid['field'] = 'uid';
+        $author_uid['relationship'] = 'nid';
+        $author_uid['default_action'] = 'default';
+        $author_uid['default_argument_type'] = 'current_user';
+        $author_uid['summary']['number_of_records'] = '0';
+        $author_uid['summary']['format'] = 'default_summary';
+        $author_uid['summary_options']['items_per_page'] = '25';
+
+        $view->set_item($display_id, 'argument', 'uid', $author_uid);
+      }
+    // On the Needs Review tab, Workflow Contributor can see only content they have
+    // submitted.
+    elseif (user_has_role($role_workflow_contributor->rid)
+      && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
+        // Contextual filter: Content: Author uid
+        $author_uid['table'] = 'node';
+        $author_uid['field'] = 'uid';
+        $author_uid['relationship'] = 'nid';
+        $author_uid['default_action'] = 'default';
+        $author_uid['default_argument_type'] = 'current_user';
+        $author_uid['summary']['number_of_records'] = '0';
+        $author_uid['summary']['format'] = 'default_summary';
+        $author_uid['summary_options']['items_per_page'] = '25';
+
+        $view->set_item($display_id, 'argument', 'uid', $author_uid);
+      }
+  }
+}
+
+/**
+ * Reverts Views.
+ */
+function dkan_workflow_revert_views() {
+  ctools_include('object-cache');
+  $files = file_scan_directory(drupal_get_path('module', 'dkan_workflow') . '/views', '/.*\.view.inc$/');
+  foreach ($files as $filepath => $file) {
+    require $filepath;
+    if (isset($view)) {
+      $view->delete();
+      ctools_object_cache_clear('view', $view->name);
     }
-  // On the Needs Review tab, Workflow Contributor can see only content they have
-  // submitted.
-  elseif (user_has_role($role_workflow_contributor->rid)
-    && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
-      // Contextual filter: Content: Author uid
-      $author_uid['table'] = 'node';
-      $author_uid['field'] = 'uid';
-      $author_uid['relationship'] = 'nid';
-      $author_uid['default_action'] = 'default';
-      $author_uid['default_argument_type'] = 'current_user';
-      $author_uid['summary']['number_of_records'] = '0';
-      $author_uid['summary']['format'] = 'default_summary';
-      $author_uid['summary_options']['items_per_page'] = '25';
-      $view->set_item($display_id, 'argument', 'uid', $author_uid);
-    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function dkan_workflow_views_query_alter(&$view, &$query) {
+  if ($view->name == 'workbench_moderation') {
+    // For Workflow Moderator we need to use OR for the contextual filters.
+    $role_workflow_moderator = user_role_load_by_name('Workflow Moderator');
+    if (user_has_role($role_workflow_moderator->rid)
+      && ($view->current_display == 'needs_review_page' || $view->current_display == 'needs_review_badge')) {
+        $query->where[0]['type'] = 'OR';
+      }
+  }
 }
 
 /**
