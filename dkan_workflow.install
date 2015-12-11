@@ -40,7 +40,7 @@ function dkan_workflow_enable() {
     $node_options = array_diff($node_options, array('status'));
     // Add moderation and revision if needed.
     $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
-    variable_set($var_name, node_options);
+    variable_set($var_name, $node_options);
   }
 }
 
