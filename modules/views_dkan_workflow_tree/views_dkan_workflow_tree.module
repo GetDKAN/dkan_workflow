@@ -271,8 +271,8 @@ function theme_dkan_workflow_tree_item($variables = NULL) {
     // Parentless title type item.
     // Default to "Others"
     $title = t('Others');
-    if ($variables('title') != NULL) {
-      $title = $variables('title');
+    if ($variables['title'] != NULL) {
+      $title = $variables['title'];
     }
     $output = '<div class="item-content item-disabled">';
     $output .=
