@@ -45,7 +45,7 @@ dependencies:
     - 'drush make --prepare-install https://raw.githubusercontent.com/NuCivic/dkan/7.x-1.x/drupal-org-core.make drupal --yes'
     # For now, use the 703_dkan_workflow branch of dkan
     - 'git clone -b 703_dkan_workflow https://github.com/NuCivic/dkan.git drupal/profiles/dkan'
-    - 'drush -y make --no-core --contrib-destination=drupal/profiles/dkan drupal/profiles/dkan/drupal-org.make --no-recursion --concurrency=3':
+    - 'drush -y make --no-core --contrib-destination=drupal/profiles/dkan drupal/profiles/dkan/drupal-org.make --no-recursion --concurrency=3'
     - 'rsync -av . drupal/profiles/dkan/modules/dkan/dkan_workflow --exclude drupal'
     - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
     - 'bash circle-install.sh':
