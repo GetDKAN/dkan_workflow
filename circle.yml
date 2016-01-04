@@ -71,6 +71,12 @@ test:
   #  - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/modules/dkan/dkan_workflow/test/features docroot/profiles/dkan/test/features:
      - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/test/features:
         parallel: true
+<<<<<<< HEAD
+=======
+        files:
+          - test/features/dkan_workflow.feature
+    - cd test; bash features-tests.sh
+>>>>>>> 037b9b8... Fix file path for behat feature
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
