@@ -286,6 +286,9 @@ function dkan_workflow_revert_views() {
   }
 }
 
+/**
+ * Implements hook_views_pre_execute().
+ */
 function dkan_workflow_views_pre_execute(&$view) {
   //dpq($view->build_info['query']);
 }
@@ -311,6 +314,9 @@ function dkan_workflow_views_query_alter(&$view, &$query) {
   }
 }
 
+/**
+ * Implements hook_node_grants().
+ */
 function dkan_workflow_node_grants($user, $op) {
   $grants['workbench_moderation'] = array($user->uid);
   return $grants;
