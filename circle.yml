@@ -88,7 +88,7 @@ test:
     - cd test; bash circle-behat.sh:
         parallel: true
         files:
-          - test/dkan_workflow.feature
+          - test/features/dkan_workflow.feature
     - cd test; bash features-tests.sh
   post:
     - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
