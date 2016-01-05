@@ -1,93 +1,175 @@
 Feature:
-  Generic workbench tests for Dkan. This is based on tests written originally for HHS.
+  Workflow (Workbench) tests for DKAN Workflow Module
+
+  Given Users:
+  | name       | mail                     | status | roles                             |
+  | AUTH       | AUTH@fakeemail.com       | 1      | Authenticated User                |
+  | AUTH-WC    | AUTH-WC@fakeemail.com    | 1      | Workflow Contributor              |
+  | ED         | ED@fakeemail.com         | 1      | Editor                            |
+  | ED-WM      | ED-WM@fakeemail.com      | 1      | Editor, Workflow Moderator        |
+  | SM         | SM@fakeemail.com         | 1      | Site Manager                      |
+  | SM-WS      | SM-WS@fakeemail.com      | 1      | Site Manager, Workflow Supervisor
 
   @api @disablecaptcha
-  Scenario Outline: As <user>, I <visibility> be able to access My workbench
-    Given Users:
-      | name       | mail                     | status | roles                             |
-      | AUTH       | AUTH@fakeemail.com       | 1      | Authenticated User                |
-      | AUTH-WC    | AUTH-WC@fakeemail.com    | 1      | Workflow Contributor              |
-      | ED         | ED@fakeemail.com         | 1      | Editor                            |
-      | ED-WM      | ED-WM@fakeemail.com      | 1      | Editor, Workflow Moderator        |
-      | SM         | SM@fakeemail.com         | 1      | Site Manager                      |
-      | SM-WS      | SM-WS@fakeemail.com      | 1      | Site Manager, Workflow Supervisor |
-    And I am logged in as "<user>"
-    Then I <visibility> see the link "My Workbench"
-
-    Examples:
-      | user       | visibility |
-      | AUTH       | should not |
-      | AUTH-WC    | should     |
-      | ED         | should not |
-      | ED-WM      | should     |
-      | SM         | should not |
-      | SM-WS      | should     |
+  Scenario: As an Authenticated User without a Workbench role, I should not be able to access My Workbench
+    And I am logged in as "AUTH"
+    Then I should not see the link "My Workbench"
 
   @api @disablecaptcha
-  Scenario Outline: As a <role>, in Workbench, I <visibility> be able to access <tab>
+  Scenario: As a Workflow Contributor, I should be able to access My Workbench
+    And I am logged in as "AUTH-WC"
+    Then I should see the link "My Workbench"
+
+  @api @disablecaptcha
+  Scenario: As an Editor without a Workbench role, I should not be able to access My Workbench
+    And I am logged in as "ED"
+    Then I should not see the link "My Workbench"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should be able to access My Workbench
+    And I am logged in as "ED-WM"
+    Then I should see the link "My Workbench"
+
+
+  @api @disablecaptcha
+  Scenario: As a Site Manager without a Workbench role, I should not be able to access My Workbench
+    And I am logged in as "SM"
+    Then I should not see the link "My Workbench"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to access My Workbench
+    And I am logged in as "SM-WS"
+    Then I should see the link "My Workbench"
+
+#  --------------------------------------------------------
+
     Given pages:
       | title     | url             |
       | Workbench | admin/workbench |
-    And I am logged in as an "<role>"
-    And I am on "Workbench" page
-    Then I <visibility> see the link "<tab>"
-
-    Examples:
-      | role                 | tab           | visibility |
-      | Workflow Contributor | My drafts     | should     |
-      | Workflow Moderator   | My drafts     | should     |
-      | Workflow Supervisor  | My drafts     | should     |
-      | Workflow Contributor | Needs review  | should     |
-      | Workflow Moderator   | Needs review  | should     |
-      | Workflow Supervisor  | Needs review  | should     |
-      | Workflow Contributor | Stale drafts  | should not |
-      | Workflow Moderator   | Stale drafts  | should not |
-      | Workflow Supervisor  | Stale drafts  | should     |
-      | Workflow Contributor | Stale reviews | should not |
-      | Workflow Moderator   | Stale reviews | should not |
-      | Workflow Supervisor  | Stale reviews | should     |
 
   @api @disablecaptcha
-  Scenario Outline: As <user>, I should be able to upgrade all draft content to needs review
+  Scenario: As a Workflow Contributor, in My Workbench, I should be able to see the My Drafts tab
+    And I am logged in as a "Workflow Contributor"
+    And I am on "Workbench" page
+    Then I should see the link "My Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, in My Workbench, I should be able to see the Needs Review tab
+    And I am logged in as a "Workflow Contributor"
+    And I am on "Workbench" page
+    Then I should see the link "Needs Review"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, in My Workbench, I should not be able to see the Stale Drafts tab
+    And I am logged in as a "Workflow Contributor"
+    And I am on "Workbench" page
+    Then I should not see the link "Stale Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, in My Workbench, I should not be able to see the Stale Reviews tab
+    And I am logged in as a "Workflow Contributor"
+    And I am on "Workbench" page
+    Then I should not see the link "Stale Reviews"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, in My Workbench, I should be able to see the My Drafts tab
+    And I am logged in as a "Workflow Moderator"
+    And I am on "Workbench" page
+    Then I should see the link "My Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, in My Workbench, I should be able to see the Needs Review tab
+    And I am logged in as a "Workflow Moderator"
+    And I am on "Workbench" page
+    Then I should see the link "Needs Review"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, in My Workbench, I should not be able to see the Stale Drafts tab
+    And I am logged in as a "Workflow Moderator"
+    And I am on "Workbench" page
+    Then I should not see the link "Stale Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, in My Workbench, I should not be able to see the Stale Reviews tab
+    And I am logged in as a "Workflow Moderator"
+    And I am on "Workbench" page
+    Then I should not see the link "Stale Reviews"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the My Drafts tab
+    And I am logged in as a "Workflow Supervisor"
+    And I am on "Workbench" page
+    Then I should see the link "My Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Needs Review tab
+    And I am logged in as a "Workflow Supervisor"
+    And I am on "Workbench" page
+    Then I should see the link "Needs Review"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Stale Drafts tab
+    And I am logged in as a "Workflow Supervisor"
+    And I am on "Workbench" page
+    Then I should see the link "Stale Drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Stale Reviews tab
+    And I am logged in as a "Workflow Supervisor"
+    And I am on "Workbench" page
+    Then I should see the link "Stale Reviews"
+
+
+#  --------------------------------------------
+
     Given Users:
       | name    | mail                  | status | roles                |
       | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
       | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
       | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
-    And pages:
-      | title     | url                           |
-      | My drafts | admin/workbench/drafts-active |
-    And I am logged in as "<user>"
-    And I am on "My drafts" page
-    Then I should see the button "Submit for review"
-
-    Examples:
-      | user    |
-      | AUTH-WC |
-      | AUTH-WM |
-      | AUTH-WS |
-
-  @api @disablecaptcha
-  Scenario Outline: As <user>, I should not be able to upgrade draft content to needs review
-    Given Users:
-      | name    | mail                  | status | roles                |
       | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
       | ED      | ED@fakeemail.com      | 1      | Editor               |
       | SM      | SM@fakeemail.com      | 1      | Site Manager         |
+
     And pages:
       | title     | url                           |
       | My drafts | admin/workbench/drafts-active |
-    And I am logged in as "<user>"
-    And I should not be able to access "My drafts"
-
-    Examples:
-      | user |
-      | AUTH |
-      | ED   |
-      | SM   |
 
   @api @disablecaptcha
-  Scenario Outline: As <user>, I <visibility> be able to see content in <page> of My Workbench
+  Scenario: As a Workflow Contributor, I should be able to upgrade my draft content to needs review
+    And I am logged in as "AUTH-WC"
+    And I am on "My drafts" page
+    Then I should see the button "Submit for review"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator I should be able to upgrade my draft content to needs review
+    And I am logged in as "AUTH-WM"
+    And I am on "My drafts" page
+    Then I should see the button "Submit for review"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor I should be able to upgrade my draft content to needs review
+    And I am logged in as "AUTH-WS"
+    And I am on "My drafts" page
+    Then I should see the button "Submit for review"
+
+  @api @disablecaptcha
+  Scenario: As an Authenticated User without a workflow role I should not be able to access "My drafts"
+    And I am logged in as "AUTH"
+  I should not be able to access "My drafts"
+
+  @api @disablecaptcha
+  Scenario: As an Editor without a workflow role I should not be able to access "My drafts"
+    And I am logged in as "ED"
+  I should not be able to access "My drafts"
+
+  @api @disablecaptcha
+  Scenario: As a Site Manager without a workflow role I should not be able to access "My drafts"
+    And I am logged in as "SM"
+  I should not be able to access "My drafts"
+
+#  -------------------------------------------
     Given groups:
       | title      |
       | Smallville |
@@ -115,11 +197,11 @@ Feature:
       | title                           | author             | moderation   | moderation_date   | date created  | publisher  |
       | Smallville Draft Dataset        | AUTH-WC-Smallville | draft        | Jul 21, 2015      | Jul 21, 2015  | Smallville |
       | Smallville Needs Review Dataset | AUTH-WC-Smallville | needs_review | Jul 21, 2015      | Jul 21, 2015  | Smallville |
+      | Bludhaven Crossover Dataset     | ED-WM-Smallville   | needs_review | Jul 21, 2015      | Jul 21, 2015  | Smallville |
       | Smallville Published Dataset    | AUTH-WC-Smallville | published    | Jul 21, 2014      | Jul 21, 2015  | Smallville |
       | Bludhaven Draft Dataset         | AUTH-WC-Bludhaven  | draft        | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
       | Bludhaven Needs Review Dataset  | AUTH-WC-Bludhaven  | needs_review | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
       | Bludhaven Published Dataset     | AUTH-WC-Bludhaven  | published    | Jul 21, 2014      | Jul 21, 2015  | Bludhaven  |
-      | Bludhaven Published Dataset 2   | AUTH-WC-Bludhaven  | published    | Jul 21, 2014      | Jul 21, 2015  | Bludhaven  |
     And resources:
       | title                                        | dataset                        | author             | moderation   | format | groups audience  | moderation_date   |
       | Smallville Draft-Draft Resource              | Smallville Draft Dataset       | AUTH-WC-Smallville | draft        | csv    | Smallville       | Jul 21, 2015      |
@@ -135,218 +217,469 @@ Feature:
       | Needs review  | admin/workbench/needs-review-active |
       | Stale drafts  | admin/workbench/drafts-stale        |
       | Stale reviews | admin/workbench/needs-review-stale  |
-    And I am logged in as "<user>"
-    And I am on "<page>" page
-    Then I <visibility> see the text "<title>"
 
-    Examples:
-      | user               | page          | visibility | title                                        |
-      | AUTH-WC-Smallville | My drafts     | should     | Smallville Draft Dataset                     |
-      | AUTH-WC-Smallville | My drafts     | should not | Bludhaven Draft Dataset                      |
-      | AUTH-WC-Smallville | My drafts     | should not | Smallville Needs Review Dataset              |
-      | AUTH-WC-Smallville | My drafts     | should not | Smallville Published Dataset                 |
-      | AUTH-WC-Smallville | My drafts     | should     | Smallville Draft-Draft Resource              |
-      | AUTH-WC-Smallville | My drafts     | should not | Smallville Draft-Needs Review Resource       |
-      | AUTH-WC-Smallville | My drafts     | should not | Smallville Draft-Published Resource          |
-      | AUTH-WC-Smallville | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
-      | AUTH-WC-Smallville | Needs review  | should     | Smallville Needs Review Dataset              |
-      | AUTH-WC-Smallville | Needs review  | should not | Smallville Published Dataset                 |
-      | AUTH-WC-Smallville | Needs review  | should not | Bludhaven Needs Review Dataset               |
-      | AUTH-WC-Smallville | Needs review  | should not | Bludhaven Needs Review-Needs Review Resource |
-      | AUTH-WC-Smallville | Needs review  | should     | Smallville Draft-Needs Review Resource       |
-      | AUTH-WC-Smallville | Needs review  | should not | Smallville Draft-Published Resource          |
-      | ED-WM-Smallville   | My drafts     | should not | Smallville Draft Dataset                     |
-      | ED-WM-Smallville   | My drafts     | should not | Bludhaven Draft Dataset                      |
-      | ED-WM-Smallville   | My drafts     | should not | Smallville Draft-Draft Resource              |
-      | ED-WM-Smallville   | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
-      | ED-WM-Bludhaven    | My drafts     | should not | Bludhaven Needs Review-Draft Resource        |
-      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Needs Review Dataset               |
-      | ED-WM-Bludhaven    | Needs review  | should not | Bludhaven Needs Review-Draft Resource        |
-      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
-      | ED-WM-Bludhaven    | Needs review  | should not | Smallville Needs Review Dataset              |
-      | ED-WM-Bludhaven    | Needs review  | should not | Smallville Draft Dataset                     |
-      | ED-WM-Bludhaven    | Needs review  | should     | Bludhaven Published-Needs Review Resource    |
-      | ED-WM-Bludhaven    | Needs review  | should not | Bludhaven Published Dataset 2                |
-      | SM-WS-Smallville   | My drafts     | should not | Smallville Draft Dataset                     |
-      | SM-WS-Smallville   | Needs review  | should     | Smallville Needs Review Dataset              |
-      | SM-WS-Smallville   | Needs review  | should     | Bludhaven Needs Review Dataset               |
-      | SM-WS-Smallville   | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
-      | SM-WS-Smallville   | Stale drafts  | should     | Bludhaven Draft Dataset                      |
-      | SM-WS-Smallville   | Stale drafts  | should     | Smallville Draft Dataset                     |
-      | SM-WS-Smallville   | Stale reviews | should     | Bludhaven Needs Review Dataset               |
-      | SM-WS-Smallville   | Stale reviews | should     | Smallville Needs Review Dataset              |
-      | SM                 | My drafts     | should not | Smallville Draft Dataset                     |
-      | SM                 | Needs review  | should     | Smallville Needs Review Dataset              |
-      | SM                 | Needs review  | should     | Bludhaven Needs Review Dataset               |
-      | SM                 | Needs review  | should     | Bludhaven Needs Review-Needs Review Resource |
-      | SM                 | Stale drafts  | should     | Bludhaven Draft Dataset                      |
-      | SM                 | Stale drafts  | should     | Smallville Draft Dataset                     |
-      | SM                 | Stale reviews | should     | Bludhaven Needs Review Dataset               |
-      | SM                 | Stale reviews | should     | Smallville Needs Review Dataset              |
 
   @api @disablecaptcha
-  Scenario Outline: As a role, I should be able to upgrade all content to published
-    Given groups:
-      | title      |
-      | Coast City |
-    And Users:
-      | name    | mail                  | status | roles                |
-      | AUTH-GA | AUTH-GA@fakeemail.com | 1      | Authenticated User   |
-      | AUTH-GM | AUTH-GM@fakeemail.com | 1      | Authenticated User   |
-      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
-      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
-      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
-      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
-      | ED      | ED@fakeemail.com      | 1      | Editor               |
-      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
-    And group memberships:
-      | user    | role on group        | group      | membership status |
-      | AUTH-GA | administrator member | Coast City | Active            |
-      | AUTH-GM | member               | Coast City | Active            |
-    And datasets:
-      | title      | author  | moderation   | moderation_date   | date created | publisher  |
-      | Dataset 04 | AUTH-GA | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 08 | AUTH-GM | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 09 | AUTH-WC | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 10 | AUTH-WM | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 11 | AUTH-WS | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 12 | AUTH    | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 16 | AUTH-GA | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 20 | AUTH-GM | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 21 | AUTH-WC | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 22 | AUTH-WM | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 23 | AUTH-WS | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 24 | AUTH    | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 28 | AUTH-GA | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 32 | AUTH-GM | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 33 | AUTH-WC | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 34 | AUTH-WM | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 35 | AUTH-WS | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 36 | AUTH    | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-    And pages:
-      | title        | url                                 |
-      | My drafts    | admin/workbench/drafts-active       |
-      | Needs review | admin/workbench/needs-review-active |
-    And I am logged in as "<user>"
-    And I am on "<page>" page
-    Then I should see "<count>" items of ".views-dkan-workflow-tree-item" or more in the "dkan_workflow_tree" region
-
-    Examples:
-      | user    | page         | count |
-      | AUTH-WC | My drafts    | 1     |
-      | AUTH-WM | My drafts    | 1     |
-      | AUTH-WS | My drafts    | 1     |
-      | AUTH-WC | Needs review | 1     |
-      | AUTH-WM | Needs review | 1     |
-      | AUTH-WS | Needs review | 6     |
+  Scenario: As a Workflow Contributor, I should be able to see draft datasets I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should see the text "Smallville Draft Dataset"
 
   @api @disablecaptcha
-  Scenario Outline: As a role, I should not be able to upgrade all content to published
-    Given groups:
-      | title      |
-      | Coast City |
-    And Users:
-      | name    | mail                  | status | roles                |
-      | AUTH-GA | AUTH-GA@fakeemail.com | 1      | Authenticated User   |
-      | AUTH-GM | AUTH-GM@fakeemail.com | 1      | Authenticated User   |
-      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
-      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
-      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
-      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
-      | ED      | ED@fakeemail.com      | 1      | Editor               |
-      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
-    And group memberships:
-      | user    | role on group        | group      | membership status |
-      | AUTH-GA | administrator member | Coast City | Active            |
-      | AUTH-GM | member               | Coast City | Active            |
+  Scenario: As a Workflow Contributor, I should not be able to see draft datasets I did not author in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Bludhaven Draft Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Needs Review datasets I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Needs Review Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see published datasets I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Published Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should be able to see draft resources I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should see the text "Smallville Draft-Draft Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see draft resources I did not author in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Bludhaven Needs Review - Draft Resource"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Needs Review resources I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Draft-Needs Review Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Published resources I authored in "My Drafts"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Draft-Published Resource"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should be able to see Needs Review datasets I authored in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Needs Review Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Needs Review datasets I did not author in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should not see the text "Bludhaven Needs Review Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Published datasets I authored in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Published Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should be able to see Needs Review resources I authored in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Draft-Needs Review Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Needs Review resources I did not author in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should not see the text "Bludhaven Needs Review-Needs Review Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Contributor, I should not be able to see Published resources I authored in "Needs Review"
+    And I am logged in as "Auth-WC-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Draft-Published Resource"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should not be able to see draft datasets I did not author, but which belongs to my Agency, in "My Drafts"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Draft Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should not be able to see draft resources I did not author, but which belongs to my Agency, in "My Drafts"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Draft-Draft Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Agency, in "Needs Review"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Needs Review Dataset"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "Needs review" page
+    Then I should not see the text "Bludhaven Needs Review Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I authored, and which do not belong to my Agency, in "Needs Review"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Bludhaven Crossover Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
+    And I am logged in as "ED-WM-Smallville"
+    And I am on "Needs review" page
+    Then I should not see the text "Bludhaven Needs Review Dataset"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should not be able to see draft datasets I did not author in "My Drafts"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "My drafts" page
+    Then I should not see the text "Smallville Draft Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which belong to my Agency, in "Needs Review"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Smallville Needs Review Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Bludhaven Needs Review Dataset"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review resources I did not author, and which do not belong to my Agency, in "Needs Review"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Needs review" page
+    Then I should see the text "Bludhaven Needs Review-Needs Review Resource"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Draft datasets I did not author, and which do not belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Stale drafts" page
+    Then I should see the text "Bludhaven Draft Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Draft datasets I did not author, and which do belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Stale drafts" page
+    Then I should see the text "Smallville Draft Dataset"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do not belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Stale reviews" page
+    Then I should see the text "Bludhaven Needs Review Dataset"
+
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
+    And I am logged in as "SM-WS-Smallville"
+    And I am on "Stale reviews" page
+    Then I should see the text "Smallville Needs Review Dataset"
+
+#  ----------------------------------------------------------------
+    Given users:
+      | user			| role						| group		|
+      | Rogue			| Authenticated User, Workflow Contributor	| XMen		|
+      | Cyclops		| Editor, Workflow Moderator			| XMen		|
+      | Xavier		| Site Manager, Workflow Supervisor		| XMen		|
+      | Mister Sinister 	| Site Manager, Workflow Supervisor		|		|
+  and groups:
+  | title		|
+  | Xmen		|
+
+  and pages:
+  | title         | url                                 |
+  | My drafts     | admin/workbench/drafts-active       |
+  | Needs review  | admin/workbench/needs-review-active |
+
     And datasets:
-      | title      | author  | moderation   | moderation_date   | date created | publisher  |
-      | Dataset 04 | AUTH-GA | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 08 | AUTH-GM | draft        | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 09 | AUTH-WC | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 10 | AUTH-WM | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 11 | AUTH-WS | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 12 | AUTH    | draft        | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 16 | AUTH-GA | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 20 | AUTH-GM | needs_review | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 21 | AUTH-WC | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 22 | AUTH-WM | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 23 | AUTH-WS | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 24 | AUTH    | needs_review | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 28 | AUTH-GA | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 32 | AUTH-GM | published    | Jul 21, 2015      | Jul 21, 2015 | Coast City |
-      | Dataset 33 | AUTH-WC | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 34 | AUTH-WM | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 35 | AUTH-WS | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-      | Dataset 36 | AUTH    | published    | Jul 21, 2015      | Jul 21, 2015 |            |
-    And pages:
-      | title        | url                                 |
-      | My drafts    | admin/workbench/drafts-active       |
-      | Needs review | admin/workbench/needs-review-active |
-    And I am logged in as "<user>"
-    And I should not be able to access "<page>"
+      | title                           | author        | moderation   | moderation_date   | date created  | publisher  |
+      | I Miss the Brotherhood       	| Rogue 	| draft        | Jul 21, 2015      | Jul 21, 2015  | XMen	|
+      | It's kinda lonely being me 	| Rogue 	| needs_review | Jul 21, 2015      | Jul 21, 2015  | XMen	|
 
-    Examples:
-      | user    | page         |
-      | AUTH-GA | My drafts    |
-      | AUTH-GM | My drafts    |
-      | AUTH    | My drafts    |
-      | ED      | My drafts    |
-      | SM      | My drafts    |
-      | AUTH-GA | Needs review |
-      | AUTH-GM | Needs review |
-      | AUTH    | Needs review |
-      | ED      | Needs review |
-      | SM      | Needs review |
 
-  @api @disablecaptcha @mail
-  Scenario Outline: As a user, I should/should not receive an email on content moderation state change
+  @api @disablecaptcha
+  Scenario: As an Authenticated user, I should be able to upgrade my content to Needs Review
+    And I am logged in as "Rogue"
+    And I am on the "My drafts" page
+    Then I should see the "Submit for Review" link next to "I Miss the Brotherhood"
+
+  @api @disablecaptcha
+  Scenario: As an Authenticated user, I should not be able to upgrade my content to Published
+    And I am logged in as "Rogue"
+    And I am on the "Needs review" page
+    Then I should not see the "Publish" link next to "It's kinda lonely being me"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Moderator, I should be able to upgrade content belonging to my Agency to Published
+    And I am logged in as "Cyclops"
+    And I am on the "Needs review" page
+    Then I should see the "Publish" link next to "It's kinda lonely being me"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to upgrade content belonging to my Agency to Published
+    And I am logged in as "Xavier"
+    And I am on the "Needs review" page
+    Then I should see the "Publish" link next to "It's kinda lonely being me"
+
+  @api @disablecaptcha
+  Scenario: As a Workflow Supervisor, I should be able to upgrade content outside my Agency to Published
+    And I am logged in as "Mister Sinister"
+    And I am on the "Needs review" page
+    Then I should see the "Publish" link next to "It's kinda lonely being me"
+
+
+#  ----------------------------------------------------------------
+
     Given groups:
-      | title       |
-      | Smallville  |
-      | Bludhaven   |
-    And users:
-      | name      | mail                          | status  | roles                 |
-      | Robin     | robin@teentitans.org          | 1       | Workflow Contributor  |
-      | Spoiler   | stephanie.brown@yahoo.com     | 0       | Workflow Contributor  |
-      | Nightwing | acrobatman@bludhaven.com      | 1       | Workflow Moderator    |
-      | Batgirl   | silenceisgolden@bludhaven.com | 1       | Workflow Moderator    |
-      | Oracle    | iseeall@clocktower.org        | 1       | Workflow Supervisor   |
-      | Superboy  | konel@teentitans.org          | 1       | Workflow Contributor  |
-      | Ma Kent   | supermom@smallville.com       | 1       | Workflow Moderator    |
-      | Pa Kent   | superdad@smallville.com       | 1       | Workflow Moderator    |
-      | Superman  | Superman@fakeemail.com        | 1       | Authenticated User    |
-    And group memberships:
-      | user      | role on group         | group       | membership status |
-      | Robin     | member                | Bludhaven   | Active            |
-      | Spoiler   | member                | Bludhaven   | Active            |
-      | Nightwing | member                | Bludhaven   | Active            |
-      | Batgirl   | member                | Bludhaven   | Active            |
-      | Oracle    | administrator member  | Bludhaven   | Active            |
-      | Superboy  | member                | Smallville  | Active            |
-      | Ma Kent   | member                | Smallville  | Active            |
-      | Pa Kent   | member                | Smallville  | Blocked           |
-    And datasets:
-      | title                             | author    | moderation    | publisher   | moderation_date   | date created |
-      | Smallville Dataset Draft          | Superboy  | draft         | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
-      | Smallville Dataset Needs Review   | Pa Kent   | needs_review  | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
-      | Dataset 01                        | Oracle    | draft         | Bludhaven   | Jul 21, 2015      | Jul 21, 2015 |
-      | Dataset 02                        | Superboy  | needs_review  | Smallville  | Jul 21, 2015      | Jul 21, 2015 |
-      | Dataset 03                        | Superman  | draft         |             | Jul 21, 2015      | Jul 21, 2015 |
-    And pages:
-      | title            | url                                 |
-      | My drafts        | admin/workbench/drafts-active       |
-      | Needs review     | admin/workbench/needs-review-active |
-    And I am logged in as "<moderator>"
-    And I am on "<workbench tab>" page
-    And I click the "<link>" next to "<content title>"
-    Then the user "<user>" <visibility> receive an email
 
-    Examples:
-      | moderator | workbench tab | link              | content title                     | user      | visibility  |
-      | Ma Kent   | Needs review  | Reject            | Smallville Dataset Needs Review   | Pa Kent   | should      |
-      | Ma Kent   | Needs review  | Reject            | Smallville Dataset Needs Review   | Ma Kent   | should not  |
-      | Ma Kent   | Needs review  | Publish           | Smallville Dataset Needs Review   | Pa Kent   | should      |
-      | Ma Kent   | Needs review  | Publish           | Smallville Dataset Needs Review   | Ma Kent   | should not  |
-      | Superboy  | My drafts     | Submit for Review | Smallville Dataset Draft          | Ma Kent   | should      |
-      | Superboy  | My drafts     | Submit for Review | Smallville Dataset Draft          | Pa Kent   | should not  |
+      | title		|
+      | Smallville 	|
+      | Bludhaven 	|
+
+    Given users:
+
+      | name 		| mail 				| status| roles 		|
+      | Robin 	| robin@teentitans.org 		| 1 	| Workflow Contributor 	|
+      | Spoiler	| stephanie.brown@yahoo.com 	| 0 	| Workflow Contributor 	|
+      | Nightwing 	| acrobatman@bludhaven.com 	| 1 	| Workflow Moderator 	|
+      | Batgirl 	| silenceisgolden@bludhaven.com | 1 	| Workflow Moderator 	|
+      | Oracle 	| iseeall@clocktower.org 	| 1 	| Workflow Supervisor 	|
+      | Superboy 	| konel@teentitans.org 		| 1 	| Workflow Contributor 	|
+      | Ma Kent 	| supermom@smallville.com 	| 1 	| Workflow Moderator 	|
+      | Pa Kent 	| superdad@smallville.com 	| 1 	| Workflow Moderator 	|
+
+    Given group memberships:
+
+      | user 		| role on group 	| group 	| membership status 	|
+      | Robin 	| member 		| Bludhaven 	| Active 		|
+      | Spoiler 	| member 		| Bludhaven 	| Active 		|
+      | Nightwing 	| member 		| Bludhaven 	| Active 		|
+      | Batgirl 	| member 		| Bludhaven 	| Active 		|
+      | Oracle 	| administrator member 	| Bludhaven 	| Active 		|
+      | Superboy 	| member 		| Smallville 	| Active 		|
+      | Ma Kent 	| member 		| Smallville 	| Active 		|
+      | Pa Kent 	| member 		| Smallville 	| Inactive 		|
+
+    Given content:
+
+      | title 				| content type 	| author 	| moderation 	| publisher 	|
+      | Bludhaven Feedback Draft 		| Feedback 	| Robin 	| draft 	| Bludhaven 	|
+      | Bludhaven Feedback Needs Review 	| Feedback 	| Robin 	| needs_review 	| Bludhaven 	|
+      | Smallville Feedback Draft 		| Feedback 	| Superboy 	| draft 	| Smallville 	|
+      | Smallville Feedback Needs Review 	| Feedback 	| Superboy 	| needs_review 	| Smallville 	|
+      | Smallville Dataset Draft 		| Dataset 	| Superboy 	| draft 	| Smallville 	|
+      | Smallville Dataset Needs Review 	| Dataset 	| Pa Kent 	| needs_review 	| Smallville 	|
+      | Groupless Feedback Draft 		| Feedback 	| Robin 	| draft 	| 		|
+      | Groupless Feedback Needs Review 1 	| Feedback 	| Spoiler 	| needs_review 	| 		|
+      | Groupless Feedback Needs Review 2 	| Feedback 	| Robin 	| needs_review 	| 		|
+
+    And pages:
+      | title         | url                                 |
+      | My drafts     | admin/workbench/drafts-active       |
+      | Needs review  | admin/workbench/needs-review-active |
+
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" all Workflow Moderators in the content's Agency should receive an email
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
+    Then the user "Nightwing" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" all Workflow Moderators in the content's Agency should receive an email
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
+    Then the user "Batgirl" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" Workflow Supervisors in the content's Agency should not receive an email
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
+    Then the user "Oracle" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish" the Content Author should be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Robin" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Moderators in the content's agency should not be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Batgirl" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Moderators in the content's agency should not be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Nightwing" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Supervisors in the content's agency should not be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Oracle" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", Workflow Contributors moutside the content's agency should not be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Superboy" should not receive an email
+
+  @api @disablecaptcha
+
+
+  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", Workflow Moderators outside the content's agency should not be notified
+    And I am logged in as "Nightwing"
+    And I am on the "Needs review" page
+    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
+    Then the user "Ma Kent" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Content Authors should be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Robin" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Contributors who are not the content author should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Superboy" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Supervisors who are not the content author should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Oracle" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Ma Kent" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Nightwing" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
+    Then the user "Batgirl" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, inactive Content Authors should not be notified
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 2"
+    Then the user "Spoiler" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Supervisors should not be notified, even if the user is inactive
+    And I am logged in as "Oracle"
+    And I am on the "Needs review" page
+    And I click the "Reject" link next to "Groupless Feedback Needs Review 2"
+    Then the user "Oracle" should not receive an email
+
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Supervisors should be notified
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
+    Then the user "Oracle" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Content Authors should be notified
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
+    Then the user "Robin" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Moderators should not be notified
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
+    Then the user "Ma Kent" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Moderators should not be notified
+    And I am logged in as "Robin"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
+    Then the user "Nightwing" should not receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review", all Workflow Moderators within that Agency should be notified
+    And I am logged in as "Superboy"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Smallville Dataset Draft"
+    Then the user "Ma Kent" should receive an email
+
+  @api @disablecaptcha
+
+  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review," Workflow Moderators with an inactive membership to that Agency should not be notified
+    And I am logged in as "Superboy"
+    And I am on the "My drafts" page
+    And I click the "Submit for Review" link next to "Smallville Dataset Draft"
+    Then the user "Pa Kent" should not receive an email
