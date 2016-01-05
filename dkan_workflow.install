@@ -35,7 +35,7 @@ function dkan_workflow_enable() {
   foreach ($dkan_workflow_content_types as $type) {
     $var_name = 'node_options_' . $type;
     $node_options = variable_get($var_name, array());
-    $node_options = (is_array($data[$var_name]->value)) ? $data[$var_name]->value : $node_options;
+    $node_options = (is_array($node_options[$var_name]->value)) ? $node_options[$var_name]->value : $node_options;
 
     // Remove status if set;
     $node_options = array_diff($node_options, array('status'));
