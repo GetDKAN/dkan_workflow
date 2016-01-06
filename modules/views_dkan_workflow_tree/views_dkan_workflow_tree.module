@@ -64,7 +64,8 @@ function views_dkan_workflow_tree_action_info() {
       'label' => t("Workflow set moderation state " . $label),
       'triggers' => array('node_presave', 'node_insert', 'node_update', 'workbench_moderation_transition'),
       'callback' => 'views_dkan_workflow_tree_set_state_action',
-      'parameters' => array('state' => $key)
+      'parameters' => array('state' => $key),
+      'configurable' => FALSE
     );
   }
   return $info;
