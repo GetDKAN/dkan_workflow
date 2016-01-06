@@ -141,6 +141,24 @@ Content you have created, whether published or unpublished, is listed under “M
       'automatic' => 1,
       'role' => 'Workflow Supervisor',
     ),
+    'published:needs_review:Workflow Moderator' => array(
+      'from_name' => 'published',
+      'to_name' => 'needs_review',
+      'subject' => NULL,
+      'message' => NULL,
+      'author' => 0,
+      'automatic' => 1,
+      'role' => 'Workflow Moderator',
+    ),
+    'published:needs_review:Workflow Supervisor' => array(
+      'from_name' => 'published',
+      'to_name' => 'needs_review',
+      'subject' => NULL,
+      'message' => NULL,
+      'author' => 0,
+      'automatic' => 1,
+      'role' => 'Workflow Supervisor',
+    ),
   );
   return $items;
 }
