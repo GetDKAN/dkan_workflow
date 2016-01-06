@@ -12,6 +12,7 @@ projects[workbench_moderation][patch][1838640] = https://www.drupal.org/files/is
 projects[workbench_email][version] = 3.4
 projects[workbench_email][subdir] = contrib
 projects[workbench_email][patch][2391233] = https://www.drupal.org/files/issues/workbench_email-2391233-3.patch
+projects[workbench_email][patch][2369983] = https://www.drupal.org/files/issues/workbench_email-feature-integration-2369983-1.patch
 
 projects[menu_badges][version] = 1.2
 projects[menu_badges][subdir] = contrib
