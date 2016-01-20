@@ -1,241 +1,143 @@
+@api @disablecaptcha @javascript
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
 
-  Given Users:
-  | name       | mail                     | status | roles                             |
-  | AUTH       | AUTH@fakeemail.com       | 1      | Authenticated User                |
-  | AUTH-WC    | AUTH-WC@fakeemail.com    | 1      | Workflow Contributor              |
-  | ED         | ED@fakeemail.com         | 1      | Editor                            |
-  | ED-WM      | ED-WM@fakeemail.com      | 1      | Editor, Workflow Moderator        |
-  | SM         | SM@fakeemail.com         | 1      | Site Manager                      |
-  | SM-WS      | SM-WS@fakeemail.com      | 1      | Site Manager, Workflow Supervisor
-
-  @api @disablecaptcha
-  Scenario: As an Authenticated User without a Workbench role, I should not be able to access My Workbench
-    And I am logged in as "AUTH"
-    Then I should not see the link "My Workbench"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to access My Workbench
-    And I am logged in as "AUTH-WC"
-    Then I should see the link "My Workbench"
-
-  @api @disablecaptcha
-  Scenario: As an Editor without a Workbench role, I should not be able to access My Workbench
-    And I am logged in as "ED"
-    Then I should not see the link "My Workbench"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should be able to access My Workbench
-    And I am logged in as "ED-WM"
-    Then I should see the link "My Workbench"
-
-
-  @api @disablecaptcha
-  Scenario: As a Site Manager without a Workbench role, I should not be able to access My Workbench
-    And I am logged in as "SM"
-    Then I should not see the link "My Workbench"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to access My Workbench
-    And I am logged in as "SM-WS"
-    Then I should see the link "My Workbench"
-
-#  --------------------------------------------------------
-
+  Background:
     Given pages:
-      | title     | url             |
-      | Workbench | admin/workbench |
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, in My Workbench, I should be able to see the My Drafts tab
-    And I am logged in as a "Workflow Contributor"
-    And I am on "Workbench" page
-    Then I should see the link "My Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, in My Workbench, I should be able to see the Needs Review tab
-    And I am logged in as a "Workflow Contributor"
-    And I am on "Workbench" page
-    Then I should see the link "Needs Review"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, in My Workbench, I should not be able to see the Stale Drafts tab
-    And I am logged in as a "Workflow Contributor"
-    And I am on "Workbench" page
-    Then I should not see the link "Stale Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, in My Workbench, I should not be able to see the Stale Reviews tab
-    And I am logged in as a "Workflow Contributor"
-    And I am on "Workbench" page
-    Then I should not see the link "Stale Reviews"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, in My Workbench, I should be able to see the My Drafts tab
-    And I am logged in as a "Workflow Moderator"
-    And I am on "Workbench" page
-    Then I should see the link "My Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, in My Workbench, I should be able to see the Needs Review tab
-    And I am logged in as a "Workflow Moderator"
-    And I am on "Workbench" page
-    Then I should see the link "Needs Review"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, in My Workbench, I should not be able to see the Stale Drafts tab
-    And I am logged in as a "Workflow Moderator"
-    And I am on "Workbench" page
-    Then I should not see the link "Stale Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, in My Workbench, I should not be able to see the Stale Reviews tab
-    And I am logged in as a "Workflow Moderator"
-    And I am on "Workbench" page
-    Then I should not see the link "Stale Reviews"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the My Drafts tab
-    And I am logged in as a "Workflow Supervisor"
-    And I am on "Workbench" page
-    Then I should see the link "My Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Needs Review tab
-    And I am logged in as a "Workflow Supervisor"
-    And I am on "Workbench" page
-    Then I should see the link "Needs Review"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Stale Drafts tab
-    And I am logged in as a "Workflow Supervisor"
-    And I am on "Workbench" page
-    Then I should see the link "Stale Drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, in My Workbench, I should be able to see the Stale Reviews tab
-    And I am logged in as a "Workflow Supervisor"
-    And I am on "Workbench" page
-    Then I should see the link "Stale Reviews"
+      | name               | url                                  |
+      | My Workbench       | /admin/workbench                     |
+      | My Content         | /admin/workbench                     |
+      | My Drafts          | /admin/workbench/drafts-active       |
+      | Needs Review       | /admin/workbench/needs-review-active |
+      | Stale Drafts       | /admin/workbench/drafts-stale        |
+      | Stale Reviews      | /admin/workbench/needs-review-stale  |
+      | My Edits           | /admin/workbench/content/edited      |
+      | All Recent Content | /admin/workbench/content/all         |
 
 
-#  --------------------------------------------
+  Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
+    Given I am logged in as a user with the "<non-workbench roles>" role
+    Then I should not see the link "My Workbench"
+    And I should be denied access to the "My Workbench" page
+    And I should be denied access to the "My Drafts" page
+    And I should be denied access to the "Needs Review" page
+    And I should be denied access to the "Stale Drafts" page
+    And I should be denied access to the "Stale Reviews" page
+    And I should be denied access to the "My Edits" page
+    And I should be denied access to the "All Recent Content" page
+    Examples:
+      | non-workbench roles |
+      | Anonymous           |
+      | Authenticated       |
+      | Content Creator     |
+      | Editor              |
+      | Site Manager        |
+      | Administrator       |
 
-    Given Users:
-      | name    | mail                  | status | roles                |
-      | AUTH-WC | AUTH-WC@fakeemail.com | 1      | Workflow Contributor |
-      | AUTH-WM | AUTH-WM@fakeemail.com | 1      | Workflow Moderator   |
-      | AUTH-WS | AUTH-WS@fakeemail.com | 1      | Workflow Supervisor  |
-      | AUTH    | AUTH@fakeemail.com    | 1      | Authenticated User   |
-      | ED      | ED@fakeemail.com      | 1      | Editor               |
-      | SM      | SM@fakeemail.com      | 1      | Site Manager         |
 
-    And pages:
-      | title     | url                           |
-      | My drafts | admin/workbench/drafts-active |
+  Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
+    Given I am logged in as a user with the "<workbench roles>" role
+    Then I should see the link "My Workbench"
+    When I follow "My Workbench"
+    Then The page status should be "ok"
+    And I should be on the "My Workbench" page
+    And I should see the link "My Content"
+    And I should see the link "My Drafts"
+    And I should see the link "My Edits"
+    And I should see the link "All Recent Content"
+    Examples:
+      | workbench roles         |
+      | Workflow Contributor    |
+      | Workflow Moderator      |
+      | Workflow Supervisor     |
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to upgrade my draft content to needs review
-    And I am logged in as "AUTH-WC"
-    And I am on "My drafts" page
-    Then I should see the button "Submit for review"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator I should be able to upgrade my draft content to needs review
-    And I am logged in as "AUTH-WM"
-    And I am on "My drafts" page
-    Then I should see the button "Submit for review"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor I should be able to upgrade my draft content to needs review
-    And I am logged in as "AUTH-WS"
-    And I am on "My drafts" page
-    Then I should see the button "Submit for review"
-
-  @api @disablecaptcha
-  Scenario: As an Authenticated User without a workflow role I should not be able to access "My drafts"
-    And I am logged in as "AUTH"
-  I should not be able to access "My drafts"
-
-  @api @disablecaptcha
-  Scenario: As an Editor without a workflow role I should not be able to access "My drafts"
-    And I am logged in as "ED"
-  I should not be able to access "My drafts"
-
-  @api @disablecaptcha
-  Scenario: As a Site Manager without a workflow role I should not be able to access "My drafts"
-    And I am logged in as "SM"
-  I should not be able to access "My drafts"
-
-#  -------------------------------------------
-    Given groups:
-      | title      |
-      | Smallville |
-      | Star City  |
-      | Bludhaven  |
-      | Coast City |
-    And Users:
-      | name               | mail                             | status | roles                             |
-      | AUTH-WC-Smallville | AUTH-WC-Smallville@fakeemail.com | 1      | Workflow Contributor              |
-      | AUTH-WC-Bludhaven  | AUTH-WC-Bludhaven@fakeemail.com  | 1      | Workflow Contributor              |
-      | ED-WM-Smallville   | ED-WM-Smallville@fakeemail.com   | 1      | Editor, Workflow Moderator        |
-      | ED-WM-Bludhaven    | ED-WM-Bludhaven@fakeemail.com    | 1      | Editor, Workflow Moderator        |
-      | SM-WS-Smallville   | SM-WS-Smallville@fakeemail.com   | 1      | Site Manager, Workflow Supervisor |
-      | SM-WS-Bludhaven    | SM-WS-Bludhaven@fakeemail.com    | 1      | Site Manager, Workflow Supervisor |
-      | SM                 | SM-NoGroup@fakeemail.com         | 1      | Site Manager, Workflow Supervisor |
-    And group memberships:
-      | user               | role on group        | group      | membership status |
-      | AUTH-WC-Smallville | member               | Smallville | Active            |
-      | AUTH-WC-Bludhaven  | member               | Bludhaven  | Active            |
-      | ED-WM-Smallville   | administrator member | Smallville | Active            |
-      | ED-WM-Bludhaven    | administrator member | Bludhaven  | Active            |
-      | SM-WS-Smallville   | administrator member | Smallville | Active            |
-      | SM-WS-Bludhaven    | administrator member | Bludhaven  | Active            |
+  Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
+    Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title                           | author             | moderation   | moderation_date   | date created  | publisher  |
-      | Smallville Draft Dataset        | AUTH-WC-Smallville | draft        | Jul 21, 2015      | Jul 21, 2015  | Smallville |
-      | Smallville Needs Review Dataset | AUTH-WC-Smallville | needs_review | Jul 21, 2015      | Jul 21, 2015  | Smallville |
-      | Bludhaven Crossover Dataset     | ED-WM-Smallville   | needs_review | Jul 21, 2015      | Jul 21, 2015  | Smallville |
-      | Smallville Published Dataset    | AUTH-WC-Smallville | published    | Jul 21, 2014      | Jul 21, 2015  | Smallville |
-      | Bludhaven Draft Dataset         | AUTH-WC-Bludhaven  | draft        | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
-      | Bludhaven Needs Review Dataset  | AUTH-WC-Bludhaven  | needs_review | Jul 21, 2015      | Jul 21, 2015  | Bludhaven  |
-      | Bludhaven Published Dataset     | AUTH-WC-Bludhaven  | published    | Jul 21, 2014      | Jul 21, 2015  | Bludhaven  |
+      | title              | published |
+      | My Draft Dataset   | No        |
     And resources:
-      | title                                        | dataset                        | author             | moderation   | format | groups audience  | moderation_date   |
-      | Smallville Draft-Draft Resource              | Smallville Draft Dataset       | AUTH-WC-Smallville | draft        | csv    | Smallville       | Jul 21, 2015      |
-      | Smallville Draft-Needs Review Resource       | Smallville Draft Dataset       | AUTH-WC-Smallville | needs_review | csv    | Smallville       | Jul 21, 2015      |
-      | Smallville Draft-Published Resource          | Smallville Draft Dataset       | AUTH-WC-Smallville | published    | csv    | Smallville       | Jul 21, 2015      |
-      | Bludhaven Needs Review-Draft Resource        | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | draft        | csv    | Bludhaven        | Jul 21, 2015      |
-      | Bludhaven Needs Review-Needs Review Resource | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | needs_review | csv    | Bludhaven        | Jul 21, 2015      |
-      | Bludhaven Needs Review-Published Resource    | Bludhaven Needs Review Dataset | AUTH-WC-Bludhaven  | published    | csv    | Bludhaven        | Jul 21, 2015      |
-      | Bludhaven Published-Needs Review Resource    | Bludhaven Published Dataset    | AUTH-WC-Bludhaven  | needs_review | csv    | Bludhaven        | Jul 21, 2015      |
-    And pages:
-      | title         | url                                 |
-      | My drafts     | admin/workbench/drafts-active       |
-      | Needs review  | admin/workbench/needs-review-active |
-      | Stale drafts  | admin/workbench/drafts-stale        |
-      | Stale reviews | admin/workbench/needs-review-stale  |
+      | title              | dataset             | format |  published |
+      | My Draft Resource  | My Draft Dataset    | csv    |  no        |
+    And I visit the "My Drafts" page
+    And I should see the button "Submit for review"
+    And I should see "My Draft Dataset"
+    And I should see "My Draft Resource"
+    And I check the box "Select all items on this page"
+    When I press "Submit for Review"
+    Then I should see the success message "Performed Submit for review on 2 items."
+    Examples:
+      | workbench roles         |
+      | Workflow Contributor    |
+      | Workflow Moderator      |
+      | Workflow Supervisor     |
 
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to see draft datasets I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should see the text "Smallville Draft Dataset"
+  Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
+    Given I am logged in as a user with the "Workflow Contributor" role
+    And datasets:
+      | title                       | published |
+      | Draft Dataset Needs Review  | No        |
+    And resources:
+      | title                        | dataset             | format |  published |
+      | Draft Resource Needs Review  | My Draft Dataset    | csv    |  no        |
+    And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
+    And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
+    Given I am logged in as a user with the "<workbench reviewer roles>" role
+    And I visit the "Needs Review" page
+    And I should see the button "Reject"
+    And I should see the button "Publish"
+    And I should see "Draft Dataset Needs Review"
+    And I should see "Draft Resource Needs Review"
+    And I check the box "Select all items on this page"
+    When I press "Publish"
+    Then I should see the success message "Performed Submit for review on 2 items."
+  Examples:
+  | workbench reviewer roles |
+  | Workflow Moderator       |
+  | Workflow Supervisor      |
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see draft datasets I did not author in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Bludhaven Draft Dataset"
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Needs Review datasets I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Needs Review Dataset"
+  Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
+    Given I am logged in as a user with the "Workflow Contributor" role
+    And datasets:
+      | title                       | published |
+      | Stale Dataset Needs Review  | No        |
+      | Fresh Dataset Needs Review  | No        |
+    And resources:
+      | title                        | dataset                | format |  published |
+      | Stale Resource Needs Review  | Stale Draft Dataset    | csv    |  no        |
+    And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
+    And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
+    Given I am logged in as a user with the "Workbench Supervisor" role
+    And I visit the "Stale Reviews" page
+    And I should see the button "Reject"
+    And I should see the button "Publish"
+    And I should see "Stale Dataset Needs Review"
+    And I should see "Stale Resource Needs Review"
+    And I should not see "Fresh Resource Needs Review"
+    And I check the box "Select all items on this page"
+    When I press "Publish"
+    Then I should see the success message "Performed Submit for review on 2 items."
+
+
+  Scenario: As a user with the Workflow Contributor role, I should be not be able to see content in My Drafts that I didn't create.
+    Given users:
+      | name 		    | roles                |
+      | some-other-user | Workflow Contributor |
+    And datasets:
+      | title           | author          | published |
+      | Not My Dataset  | some-other-user | No        |
+    And resources:
+      | title            | dataset           | author          | format |  published |
+      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no        |
+    Given I am logged in as a user with the "Workflow Contributor" role
+    And I visit the "My Drafts" page
+    And I should not see "Not My Resource"
+    And I should see "Not My Resource"
+
+    ################ TO BE CONTINUED #############################
 
   @api @disablecaptcha
   Scenario: As a Workflow Contributor, I should not be able to see published datasets I authored in "My Drafts"
@@ -337,7 +239,7 @@ Feature:
     And I am on "Needs review" page
     Then I should see the text "Bludhaven Crossover Dataset"
 
-  @api @disablecaptcha
+
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
     And I am logged in as "ED-WM-Smallville"
     And I am on "Needs review" page
