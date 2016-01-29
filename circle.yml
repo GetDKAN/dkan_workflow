@@ -29,34 +29,16 @@ checkout:
 dependencies:
 
   cache_directories:
-     - "test/vendor"
-     - "~/.composer"
-     - "~/.drush"
-     - "~/backups"
-     - "test/sites/default"
+     #- "test/vendor"
+     #- "~/.composer"
+     #- "~/.drush"
+     #- "~/backups"
+     #- "test/sites/default"
   override:
-    - 'composer install --prefer-source --no-interaction':
-        pwd:
-          test
     - mkdir $CIRCLE_ARTIFACTS/junit
-    # Install latest Drush 7.
-    #- export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - 'composer global require --prefer-source --no-interaction drush/drush:8.0.0-rc2'
-    - 'drush make --prepare-install https://raw.githubusercontent.com/NuCivic/dkan/7.x-1.x/drupal-org-core.make drupal --yes'
-    # For now, use the 703_dkan_workflow branch of dkan
-    - 'git clone -b 703_dkan_workflow https://github.com/NuCivic/dkan.git drupal/profiles/dkan'
-    - 'drush -y make --no-core --contrib-destination=drupal/profiles/dkan drupal/profiles/dkan/drupal-org.make --no-recursion --concurrency=3':
-    - 'rsync -av . drupal/profiles/dkan/modules/dkan/dkan_workflow --exclude drupal'
-    - drush use $HOME/$CIRCLE_PROJECT_REPONAME/test#dkan
-    - 'bash circle-install.sh':
-        pwd:
-          test
-    - 'drush en -y dkan_workflow':
-        pwd:
-          drupal
-    - 'drush --yes runserver :8888':
+    - 'bash dkan-module-init.sh --deps --build=$DATABASE_URL'
+    - 'ahoy drush --yes runserver :8888':
         background: true
-        pwd: drupal
 
     # Setup display for selenium
     #- sh -e /etc/init.d/xvfb start
@@ -85,13 +67,12 @@ database:
 ## Customize test commands
 test:
   override:
-    - cd test; bash circle-behat.sh:
+  # Fix for behat bug not recognizing symlinked feature files.
+  #  - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/modules/dkan/dkan_workflow/test/features docroot/profiles/dkan/test/features:
+     - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/test/features:
         parallel: true
-        files:
-          - test/dkan_workflow.feature
-    - cd test; bash features-tests.sh
   post:
-    - echo CIRCLE_ARTIFACTS; cp -av assets $CIRCLE_ARTIFACTS:
+    - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
         parallel: true
 #    - bundle exec rake jasmine:ci: # add an extra test type
 #        environment:
