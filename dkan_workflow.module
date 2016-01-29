@@ -101,6 +101,7 @@ function dkan_workflow_views_default_views_alter(&$views) {
  */
 function dkan_workflow_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && strpos($form_state['view']->name, 'workbench_') === 0) {
+    $form['submit']['#value'] = 'Filter';
     dkan_workflow_limit_workflow_exposed_filter_node_types($form);
     dkan_workflow_remove_email_errors();
   }
