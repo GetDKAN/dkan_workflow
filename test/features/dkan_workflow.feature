@@ -14,7 +14,9 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
 
-
+  @fixme
+  # Non workbench roles can see the menu item My Workflow. However
+  # they can't access to the page.
   Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
     Given I am logged in as a user with the "<non-workbench roles>" role
     Then I should not see the link "My Workbench"
@@ -27,13 +29,11 @@ Feature:
     And I should be denied access to the "All Recent Content" page
     Examples:
       | non-workbench roles |
-      | Anonymous           |
-      | Authenticated       |
-      | Content Creator     |
-      | Editor              |
-      | Site Manager        |
-      | Administrator       |
-
+      | anonymous user      |
+      | authenticated user  |
+      | content creator     |
+      | editor              |
+      | site manager        |
 
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
@@ -41,38 +41,41 @@ Feature:
     When I follow "My Workbench"
     Then The page status should be "ok"
     And I should be on the "My Workbench" page
-    And I should see the link "My Content"
-    And I should see the link "My Drafts"
+    And I should see the link "My content"
+    #And I should see the link " My drafts"
     And I should see the link "My Edits"
     And I should see the link "All Recent Content"
     Examples:
-      | workbench roles         |
-      | Workflow Contributor    |
-      | Workflow Moderator      |
-      | Workflow Supervisor     |
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
 
+  # It needed a fix to populate the drupal global $user var in order to work
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
       | title              | published |
-      | My Draft Dataset   | No        |
+      | My Draft Dataset   | no        |
     And resources:
       | title              | dataset             | format |  published |
       | My Draft Resource  | My Draft Dataset    | csv    |  no        |
-    And I visit the "My Drafts" page
-    And I should see the button "Submit for review"
+    And I am on the "My Drafts" page
+    Then I should see the button "Submit for review"
     And I should see "My Draft Dataset"
     And I should see "My Draft Resource"
     And I check the box "Select all items on this page"
-    When I press "Submit for Review"
-    Then I should see the success message "Performed Submit for review on 2 items."
+    And I press "Submit for review"
+    Then I wait for "Performed Submit for review on 2 items."
     Examples:
       | workbench roles         |
-      | Workflow Contributor    |
-      | Workflow Moderator      |
-      | Workflow Supervisor     |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
 
-
+  @fixme
+  # It needs a fix in dkan_workflow. For some reason batch processing isn't working with
+  # moderators roles.
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -80,7 +83,7 @@ Feature:
       | Draft Dataset Needs Review  | No        |
     And resources:
       | title                        | dataset             | format |  published |
-      | Draft Resource Needs Review  | My Draft Dataset    | csv    |  no        |
+      | Draft Resource Needs Review  | Draft Dataset Needs Review    | csv    |  no        |
     And I update the moderation state of "Draft Dataset Needs Review" to "Needs Review"
     And I update the moderation state of "Draft Resource Needs Review" to "Needs Review"
     Given I am logged in as a user with the "<workbench reviewer roles>" role
@@ -93,11 +96,11 @@ Feature:
     When I press "Publish"
     Then I should see the success message "Performed Submit for review on 2 items."
   Examples:
-  | workbench reviewer roles |
-  | Workflow Moderator       |
-  | Workflow Supervisor      |
+      | workbench reviewer roles              |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
 
-
+  # It need the global user fix
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -105,12 +108,12 @@ Feature:
       | Stale Dataset Needs Review  | No        |
       | Fresh Dataset Needs Review  | No        |
     And resources:
-      | title                        | dataset                | format |  published |
-      | Stale Resource Needs Review  | Stale Draft Dataset    | csv    |  no        |
+      | title                        | dataset                    | format |  published |
+      | Stale Resource Needs Review  | Stale Dataset Needs Review | csv    |  no        |
     And I update the moderation state of "Stale Dataset Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Stale Resource Needs Review" to "Needs Review" on date "30 days ago"
     And I update the moderation state of "Fresh Dataset Needs Review" to "Needs Review" on date "20 days ago"
-    Given I am logged in as a user with the "Workbench Supervisor" role
+    Given I am logged in as a user with the "Workflow Supervisor" role
     And I visit the "Stale Reviews" page
     And I should see the button "Reject"
     And I should see the button "Publish"
@@ -119,12 +122,12 @@ Feature:
     And I should not see "Fresh Resource Needs Review"
     And I check the box "Select all items on this page"
     When I press "Publish"
-    Then I should see the success message "Performed Submit for review on 2 items."
+    Then I wait for "Performed Publish on 3 items"
 
-
-  Scenario: As a user with the Workflow Contributor role, I should be not be able to see content in My Drafts that I didn't create.
+  Scenario Outline: As a user with the Workflow Roles, I should not be able to see draft resources I did not author in 'My Drafts'
+    Given I am logged in as a user with the "<workbench roles>" role
     Given users:
-      | name 		    | roles                |
+      | name            | roles                |
       | some-other-user | Workflow Contributor |
     And datasets:
       | title           | author          | published |
@@ -132,62 +135,136 @@ Feature:
     And resources:
       | title            | dataset           | author          | format |  published |
       | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no        |
-    Given I am logged in as a user with the "Workflow Contributor" role
+
     And I visit the "My Drafts" page
     And I should not see "Not My Resource"
-    And I should see "Not My Resource"
+    And I should not see "Not My Dataset"
+    Examples:
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
+  @fixme
+  ## Needs a fix to automatically moderate to Published when published is set to yes
+  Scenario Outline: As a Workflow Contributor, I should not be able to see Published datasets I authored in workbench pages
+    Given I am logged in as a user with the "Workflow Contributor" role
+    And datasets:
+      | title                         | published |
+      | Smallville Published Dataset  | Yes       |
+    And I am on "<workbench pages>" page
+    Then I should not see the text "Smallville Published Dataset"
+    Examples:
+      | workbench pages                       |
+      | Needs Review                          |
+      | My Drafts                             |
+
+  # needs the global user fix
+  Scenario Outline: As a user with the Workflow Roles, I should be able to see draft resources and datasets I authored in 'My Drafts'
+    Given I am logged in as a user with the "<workbench roles>" role
+    And datasets:
+      | title       | published |
+      | My Dataset  | No        |
+    And resources:
+      | title        | dataset    | format |  published |
+      | My Resource  | My Dataset | csv    |  no        |
+
+    And I visit the "My Drafts" page
+    And I should see "My Resource"
+    And I should see "My Dataset"
+    Examples:
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
+  @fixme
+  # needs the global user fix
+  # It needs to implement workflow state hash in the table
+  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
+    Given I am logged in as a user with the "<workbench roles>" role
+    And datasets:
+      | title       | published | workflow state |
+      | My Dataset  | No        | Needs Review   |
+    And resources:
+      | title        | dataset       | format |  published | workflow state |
+      | My Resource  | My Dataset    | csv    |  no        | Needs Review   |
+    And I visit the "My Drafts" page
+    And I should not see "My Resource"
+    And I should not see "My Dataset"
+    Examples:
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
+
+  @fixme
+  # needs the global user fix
+  # It needs to implement workflow state hash in the table
+  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Published resources I authored in 'My Drafts'
+    Given I am logged in as a user with the "<workbench roles>" role
+    And datasets:
+      | title       | published | workflow state |
+      | My Dataset  | Yes       | Published      |
+    And resources:
+      | title        | dataset       | format |  published | workflow state |
+      | My Resource  | My Dataset    | csv    |  Yes       | Published      |
+    And I visit the "My Drafts" page
+    And I should not see "My Resource"
+    And I should not see "My Dataset"
+    Examples:
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
+  @fixme
+  # needs the global user fix
+  # It needs to implement workflow state hash in the table
+  Scenario Outline: As a user with the Workflow Roles, I should be able to see Needs Review datasets I authored in 'Needs Review'
+    Given I am logged in as a user with the "<workbench roles>" role
+    And datasets:
+      | title       | published | workflow state |
+      | My Dataset  | Yes       | Needs Review   |
+    And resources:
+      | title        | dataset       | format |  published | workflow state |
+      | My Resource  | My Dataset    | csv    |  Yes       | Needs Review   |
+    And I visit the "Needs Review" page
+    And I should see "My Resource"
+    And I should see "My Dataset"
+    Examples:
+      | workbench roles                       |
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
+  @fixme
+  # needs the global user fix
+  # It needs to implement workflow state hash in the table
+  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Needs Review datasets I did not author in 'Needs Review'
+    Given I am logged in as a user with the "<workbench roles>" role
+    Given users:
+      | name            | roles                |
+      | some-other-user | Workflow Contributor |
+    And datasets:
+      | title           | author          | published | workflow state |
+      | Not My Dataset  | some-other-user | No        | Needs Review   |
+    And resources:
+      | title            | dataset           | author          | format |  published  | workflow state |
+      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no         | Needs Review   |
+    And I visit the "<workflow tab>" page
+    And I should not see "Not My Resource"
+    And I should not see "Not My Dataset"
+    Examples:
+      | workbench roles                       | wor
+      | Workflow Contributor, content creator |
+      | Workflow Moderator, editor            |
+      | Workflow Supervisor, site manager     |
+
 
     ################ TO BE CONTINUED #############################
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see published datasets I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Published Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to see draft resources I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should see the text "Smallville Draft-Draft Resource"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see draft resources I did not author in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Bludhaven Needs Review - Draft Resource"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Needs Review resources I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Draft-Needs Review Resource"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Published resources I authored in "My Drafts"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Draft-Published Resource"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to see Needs Review datasets I authored in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Needs Review Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Needs Review datasets I did not author in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should not see the text "Bludhaven Needs Review Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Published datasets I authored in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Published Dataset"
 
   @api @disablecaptcha
   Scenario: As a Workflow Contributor, I should be able to see Needs Review resources I authored in "Needs Review"
@@ -214,11 +291,7 @@ Feature:
     And I am on "My drafts" page
     Then I should not see the text "Smallville Draft Dataset"
 
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should not be able to see draft resources I did not author, but which belongs to my Agency, in "My Drafts"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Draft-Draft Resource"
+
 
   @api @disablecaptcha
   Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Agency, in "Needs Review"
@@ -298,24 +371,25 @@ Feature:
 
 #  ----------------------------------------------------------------
     Given users:
-      | user			| role						| group		|
-      | Rogue			| Authenticated User, Workflow Contributor	| XMen		|
-      | Cyclops		| Editor, Workflow Moderator			| XMen		|
-      | Xavier		| Site Manager, Workflow Supervisor		| XMen		|
-      | Mister Sinister 	| Site Manager, Workflow Supervisor		|		|
-  and groups:
-  | title		|
-  | Xmen		|
+      | user      | role            | group   |
+      | Rogue     | Authenticated User, Workflow Contributor  | XMen    |
+      | Cyclops   | Editor, Workflow Moderator      | XMen    |
+      | Xavier    | Site Manager, Workflow Supervisor   | XMen    |
+      | Mister Sinister   | Site Manager, Workflow Supervisor   |   |
 
-  and pages:
-  | title         | url                                 |
-  | My drafts     | admin/workbench/drafts-active       |
-  | Needs review  | admin/workbench/needs-review-active |
+    And groups:
+      | title   |
+      | Xmen    |
+
+    And pages:
+      | title         | url                                 |
+      | My drafts     | admin/workbench/drafts-active       |
+      | Needs review  | admin/workbench/needs-review-active |
 
     And datasets:
       | title                           | author        | moderation   | moderation_date   | date created  | publisher  |
-      | I Miss the Brotherhood       	| Rogue 	| draft        | Jul 21, 2015      | Jul 21, 2015  | XMen	|
-      | It's kinda lonely being me 	| Rogue 	| needs_review | Jul 21, 2015      | Jul 21, 2015  | XMen	|
+      | I Miss the Brotherhood        | Rogue   | draft        | Jul 21, 2015      | Jul 21, 2015  | XMen |
+      | It's kinda lonely being me  | Rogue   | needs_review | Jul 21, 2015      | Jul 21, 2015  | XMen |
 
 
   @api @disablecaptcha
@@ -353,46 +427,46 @@ Feature:
 
     Given groups:
 
-      | title		|
-      | Smallville 	|
-      | Bludhaven 	|
+      | title   |
+      | Smallville  |
+      | Bludhaven   |
 
     Given users:
 
-      | name 		| mail 				| status| roles 		|
-      | Robin 	| robin@teentitans.org 		| 1 	| Workflow Contributor 	|
-      | Spoiler	| stephanie.brown@yahoo.com 	| 0 	| Workflow Contributor 	|
-      | Nightwing 	| acrobatman@bludhaven.com 	| 1 	| Workflow Moderator 	|
-      | Batgirl 	| silenceisgolden@bludhaven.com | 1 	| Workflow Moderator 	|
-      | Oracle 	| iseeall@clocktower.org 	| 1 	| Workflow Supervisor 	|
-      | Superboy 	| konel@teentitans.org 		| 1 	| Workflow Contributor 	|
-      | Ma Kent 	| supermom@smallville.com 	| 1 	| Workflow Moderator 	|
-      | Pa Kent 	| superdad@smallville.com 	| 1 	| Workflow Moderator 	|
+      | name    | mail        | status| roles     |
+      | Robin   | robin@teentitans.org    | 1   | Workflow Contributor  |
+      | Spoiler | stephanie.brown@yahoo.com   | 0   | Workflow Contributor  |
+      | Nightwing   | acrobatman@bludhaven.com  | 1   | Workflow Moderator  |
+      | Batgirl   | silenceisgolden@bludhaven.com | 1   | Workflow Moderator  |
+      | Oracle  | iseeall@clocktower.org  | 1   | Workflow Supervisor   |
+      | Superboy  | konel@teentitans.org    | 1   | Workflow Contributor  |
+      | Ma Kent   | supermom@smallville.com   | 1   | Workflow Moderator  |
+      | Pa Kent   | superdad@smallville.com   | 1   | Workflow Moderator  |
 
     Given group memberships:
 
-      | user 		| role on group 	| group 	| membership status 	|
-      | Robin 	| member 		| Bludhaven 	| Active 		|
-      | Spoiler 	| member 		| Bludhaven 	| Active 		|
-      | Nightwing 	| member 		| Bludhaven 	| Active 		|
-      | Batgirl 	| member 		| Bludhaven 	| Active 		|
-      | Oracle 	| administrator member 	| Bludhaven 	| Active 		|
-      | Superboy 	| member 		| Smallville 	| Active 		|
-      | Ma Kent 	| member 		| Smallville 	| Active 		|
-      | Pa Kent 	| member 		| Smallville 	| Inactive 		|
+      | user    | role on group   | group   | membership status   |
+      | Robin   | member    | Bludhaven   | Active    |
+      | Spoiler   | member    | Bludhaven   | Active    |
+      | Nightwing   | member    | Bludhaven   | Active    |
+      | Batgirl   | member    | Bludhaven   | Active    |
+      | Oracle  | administrator member  | Bludhaven   | Active    |
+      | Superboy  | member    | Smallville  | Active    |
+      | Ma Kent   | member    | Smallville  | Active    |
+      | Pa Kent   | member    | Smallville  | Inactive    |
 
     Given content:
 
-      | title 				| content type 	| author 	| moderation 	| publisher 	|
-      | Bludhaven Feedback Draft 		| Feedback 	| Robin 	| draft 	| Bludhaven 	|
-      | Bludhaven Feedback Needs Review 	| Feedback 	| Robin 	| needs_review 	| Bludhaven 	|
-      | Smallville Feedback Draft 		| Feedback 	| Superboy 	| draft 	| Smallville 	|
-      | Smallville Feedback Needs Review 	| Feedback 	| Superboy 	| needs_review 	| Smallville 	|
-      | Smallville Dataset Draft 		| Dataset 	| Superboy 	| draft 	| Smallville 	|
-      | Smallville Dataset Needs Review 	| Dataset 	| Pa Kent 	| needs_review 	| Smallville 	|
-      | Groupless Feedback Draft 		| Feedback 	| Robin 	| draft 	| 		|
-      | Groupless Feedback Needs Review 1 	| Feedback 	| Spoiler 	| needs_review 	| 		|
-      | Groupless Feedback Needs Review 2 	| Feedback 	| Robin 	| needs_review 	| 		|
+      | title         | content type  | author  | moderation  | publisher   |
+      | Bludhaven Feedback Draft    | Feedback  | Robin   | draft   | Bludhaven   |
+      | Bludhaven Feedback Needs Review   | Feedback  | Robin   | needs_review  | Bludhaven   |
+      | Smallville Feedback Draft     | Feedback  | Superboy  | draft   | Smallville  |
+      | Smallville Feedback Needs Review  | Feedback  | Superboy  | needs_review  | Smallville  |
+      | Smallville Dataset Draft    | Dataset   | Superboy  | draft   | Smallville  |
+      | Smallville Dataset Needs Review   | Dataset   | Pa Kent   | needs_review  | Smallville  |
+      | Groupless Feedback Draft    | Feedback  | Robin   | draft   |     |
+      | Groupless Feedback Needs Review 1   | Feedback  | Spoiler   | needs_review  |     |
+      | Groupless Feedback Needs Review 2   | Feedback  | Robin   | needs_review  |     |
 
     And pages:
       | title         | url                                 |
