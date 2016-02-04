@@ -110,17 +110,20 @@ function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$for
     unset($form['select_all_markup']);
 
     $dataset_icon = array(
-      'type' => 'dataset'
+      'type' => 'dataset',
+      'class' => array('facet-icon')
     );
     $resource_icon = array(
-      'type' => 'resource'
+      'type' => 'resource',
+      'class' => array('facet-icon')
     );
     $feedback_icon = array(
-      'type' => 'resource'
+      'type' => 'resource',
+      'class' => array('facet-icon')
     );
-    $dataset_legend = '<span>'. nuboot_radix_icon($dataset_icon) . ' Dataset</span>';
-    $resource_legend = '<span>'. nuboot_radix_icon($resource_icon) . ' Resource</span>';
-    $feedback_legend = '<span>'. nuboot_radix_icon($feedback_icon) . ' Feedback</span>';
+    $dataset_legend = '<span>'. theme('facet_icons', $dataset_icon) . ' Dataset</span>';
+    $resource_legend = '<span>'. theme('facet_icons', $resource_icon) . ' Resource</span>';
+    $feedback_legend = '<span>'. theme('facet_icons', $feedback_icon) . ' Feedback</span>';
     $form['#suffix'] = "<div class=\"references\"> $dataset_legend $resource_legend $feedback_legend</div>";
   }
 }
@@ -366,13 +369,14 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
 
   $author = user_load($node->revision_uid);
   $icon = array(
-    'type' => $node->type
+    'type' => $node->type,
+    'class' => array('facet-icon')
   );
   $output .=
       '<span class="views-dkan-workflow-tree-title ' . $node->type . '">' .
       $vbo .
       theme('link' , array(
-          'text' => nuboot_radix_icon($icon) . ' ' . $node->title,
+          'text' => theme('facet_icons', $icon) . ' ' . $node->title,
           'path' => 'node/' . $node->nid,
           'options' => array(
             'html' => true
