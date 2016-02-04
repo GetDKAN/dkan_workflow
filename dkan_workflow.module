@@ -224,6 +224,19 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
     if (user_has_role($role_workflow_moderator->rid)
       && ($display_id == 'needs_review_page' || $display_id == 'needs_review_badge')) {
 
+        // Contextual filter: Content: Author uid.
+        $author_uid['id'] = 'author';
+        $author_uid['table'] = 'node';
+        $author_uid['field'] = 'uid';
+        $author_uid['relationship'] = 'nid';
+        $author_uid['default_action'] = 'default';
+        $author_uid['default_argument_type'] = 'current_user';
+        $author_uid['summary']['number_of_records'] = '0';
+        $author_uid['summary']['format'] = 'default_summary';
+        $author_uid['summary_options']['items_per_page'] = '25';
+
+        $view->set_item($display_id, 'argument', 'uid', $author_uid);
+
         // Contextual filter: OG membership: Group ID.
         $og_membership = array();
         $og_membership['id'] = 'og_membership';
@@ -238,20 +251,7 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
         $og_membership['break_phrase'] = TRUE;
 
         $view->set_item($display_id, 'argument', 'gid', $og_membership);
-
-        // Contextual filter: Content: Author uid.
-        $author_uid['id'] = 'author';
-        $author_uid['table'] = 'node';
-        $author_uid['field'] = 'uid';
-        $author_uid['relationship'] = 'nid';
-        $author_uid['default_action'] = 'default';
-        $author_uid['default_argument_type'] = 'current_user';
-        $author_uid['summary']['number_of_records'] = '0';
-        $author_uid['summary']['format'] = 'default_summary';
-        $author_uid['summary_options']['items_per_page'] = '25';
-
-        $view->set_item($display_id, 'argument', 'uid', $author_uid);
-      }
+    }
     // On the Needs Review tab, Workflow Contributor can see only content they have
     // submitted.
     elseif (user_has_role($role_workflow_contributor->rid)
