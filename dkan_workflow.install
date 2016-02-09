@@ -11,7 +11,7 @@ function dkan_workflow_install() {
   $item = array(
     'link_path' => 'admin/workbench',
     'link_title' => 'My Workbench',
-    'menu_name' => 'main-menu',
+    'menu_name' => 'menu-command-center-menu',
     'weight' => -50,
     'expanded' => 0,
   );
@@ -19,9 +19,6 @@ function dkan_workflow_install() {
   $item_id = menu_link_save($item);
   dkan_workflow_revert_views();
 
-  // Default content type to show in dkan_workflow.
-  $dkan_workflow_content_types_default = array('dataset', 'resource', 'feedback');
-  variable_set('dkan_workflow_content_types', $dkan_workflow_content_type_default);
 }
 
 /**
@@ -31,31 +28,24 @@ function dkan_workflow_install() {
  * config is kept persistante using the hook_strongarm_alter().
  */
 function dkan_workflow_enable() {
-  $dkan_workflow_content_types = variable_get('dkan_workflow_content_types', array());
+
+  // Default dkan content types with moderation.
+  $dkan_workflow_content_types = array('dataset', 'resource', 'feedback');
+
   foreach ($dkan_workflow_content_types as $type) {
     $var_name = 'node_options_' . $type;
     $node_options = variable_get($var_name, array());
-    $node_options = $data[$var_name]->value;
-    // Remove status if set
+    $node_options = (array_key_exists($var_name, $node_options) && is_array($node_options[$var_name]->value)) ?
+      $node_options[$var_name]->value :
+      $node_options;
+
+    // Remove status if set;
     $node_options = array_diff($node_options, array('status'));
+
     // Add moderation and revision if needed.
     $node_options = array_values(array_unique(array_merge($node_options, array('moderation', 'revision')), SORT_REGULAR));
     variable_set($var_name, $node_options);
   }
-}
-
-/**
- * Make sure the workflow views are reverted.
- */
-function dkan_workflow_update_7001() {
   dkan_workflow_revert_views();
-  return t('DKAN Workflow views have been reverted.');
-}
-
-/**
- * Add support for dkan_workflow enabled content types
- */
-function dkan_workflow_update_7002() {
-  $dkan_workflow_content_types_default = array('dataset', 'resource', 'feedback');
-  variable_set('dkan_workflow_content_types', $dkan_workflow_content_types_default);
+  variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
 }

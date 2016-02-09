@@ -24,6 +24,11 @@ function dkan_workflow_workbench_moderation_export_transitions() {
       'to_name' => 'published',
       'name' => 'Publish',
     ),
+    'published:needs_review' => array(
+      'from_name' => 'published',
+      'to_name' => 'needs_review',
+      'name' => 'Unpublish',
+    ),
   );
   return $items;
 }
