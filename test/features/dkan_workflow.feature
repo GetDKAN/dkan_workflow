@@ -35,6 +35,7 @@ Feature:
       | editor              |
       | site manager        |
 
+  @ok
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
     Then I should see the link "My Workbench"
@@ -51,7 +52,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  # It needed a fix to populate the drupal global $user var in order to work
+  @ok
   Scenario Outline: As a user with any Workflow role, I should be able to upgrade my own draft content to needs review.
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
@@ -73,9 +74,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @fixme
-  # It needs a fix in dkan_workflow. For some reason batch processing isn't working with
-  # moderators roles.
+  @ok
   Scenario Outline: As a user with the Workflow Moderator or Supervisor role, I should be able to publish 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -94,13 +93,13 @@ Feature:
     And I should see "Draft Resource Needs Review"
     And I check the box "Select all items on this page"
     When I press "Publish"
-    Then I should see the success message "Performed Submit for review on 2 items."
-  Examples:
+    Then I wait for "Performed Publish on 2 items."
+    Examples:
       | workbench reviewer roles              |
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  # It need the global user fix
+  @ok
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
@@ -124,7 +123,8 @@ Feature:
     When I press "Publish"
     Then I wait for "Performed Publish on 3 items"
 
-  Scenario Outline: As a user with the Workflow Roles, I should not be able to see draft resources I did not author in 'My Drafts'
+  @ok
+  Scenario Outline: As a user with Workflow Roles, I should not be able to see draft contents I did not author in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     Given users:
       | name            | roles                |
@@ -145,22 +145,8 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @fixme
-  ## Needs a fix to automatically moderate to Published when published is set to yes
-  Scenario Outline: As a Workflow Contributor, I should not be able to see Published datasets I authored in workbench pages
-    Given I am logged in as a user with the "Workflow Contributor" role
-    And datasets:
-      | title                         | published |
-      | Smallville Published Dataset  | Yes       |
-    And I am on "<workbench pages>" page
-    Then I should not see the text "Smallville Published Dataset"
-    Examples:
-      | workbench pages                       |
-      | Needs Review                          |
-      | My Drafts                             |
-
-  # needs the global user fix
-  Scenario Outline: As a user with the Workflow Roles, I should be able to see draft resources and datasets I authored in 'My Drafts'
+  @ok
+  Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
       | title       | published |
@@ -168,7 +154,6 @@ Feature:
     And resources:
       | title        | dataset    | format |  published |
       | My Resource  | My Dataset | csv    |  no        |
-
     And I visit the "My Drafts" page
     And I should see "My Resource"
     And I should see "My Dataset"
@@ -178,17 +163,46 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @fixme
-  # needs the global user fix
-  # It needs to implement workflow state hash in the table
-  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
+  @ok
+  Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
+    Given users:
+      | name            | roles                                 | mail                  |
+      | contributor     | Workflow Contributor, content creator | contributor@email.com |
+      | moderator       | Workflow Moderator, editor            | moderator@email.com   |
+    Given I am logged in as "contributor"
+    And datasets:
+      | title                         | published |
+      | My Dataset                    | No        |
+    And resources:
+      | title        | dataset       | format |  published |
+      | My Resource  | My Dataset    | csv    |  Yes       |
+    And I update the moderation state of "My Dataset" to "Needs Review"
+    And I update the moderation state of "My Resource" to "Needs Review"
+    And "moderator" updates the moderation state of "My Dataset" to "Published"
+    And "moderator" updates the moderation state of "My Resource" to "Published"
+    And I am on "<page>" page
+    Then I should not see "My Dataset"
+    Then I should not see "My Resource"
+    Examples:
+      | page          | workflow role                         |
+      | My Drafts     | Workflow Contributor, content creator |
+      | Needs Review  | Workflow Contributor, content creator |
+      | My Drafts     | Workflow Moderator, editor            |
+      | Needs Review  | Workflow Moderator, editor            |
+      | My Drafts     | Workflow Supervisor, site manager     |
+      | Needs Review  | Workflow Supervisor, site manager     |
+
+  @ok
+  Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
-      | title       | published | workflow state |
-      | My Dataset  | No        | Needs Review   |
+      | title       | published |
+      | My Dataset  | No        |
     And resources:
-      | title        | dataset       | format |  published | workflow state |
-      | My Resource  | My Dataset    | csv    |  no        | Needs Review   |
+      | title        | dataset       | format |  published |
+      | My Resource  | My Dataset    | csv    |  no        |
+    And I update the moderation state of "My Dataset" to "Needs Review"
+    And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "My Drafts" page
     And I should not see "My Resource"
     And I should not see "My Dataset"
@@ -198,232 +212,169 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-
-  @fixme
-  # needs the global user fix
-  # It needs to implement workflow state hash in the table
-  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Published resources I authored in 'My Drafts'
-    Given I am logged in as a user with the "<workbench roles>" role
+  @ok
+  Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
+    Given I am logged in as a user with the "Workflow Contributor" role
     And datasets:
-      | title       | published | workflow state |
-      | My Dataset  | Yes       | Published      |
+      | title       | published |
+      | My Dataset  | Yes       |
     And resources:
-      | title        | dataset       | format |  published | workflow state |
-      | My Resource  | My Dataset    | csv    |  Yes       | Published      |
-    And I visit the "My Drafts" page
-    And I should not see "My Resource"
-    And I should not see "My Dataset"
-    Examples:
-      | workbench roles                       |
-      | Workflow Contributor, content creator |
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
-
-  @fixme
-  # needs the global user fix
-  # It needs to implement workflow state hash in the table
-  Scenario Outline: As a user with the Workflow Roles, I should be able to see Needs Review datasets I authored in 'Needs Review'
-    Given I am logged in as a user with the "<workbench roles>" role
-    And datasets:
-      | title       | published | workflow state |
-      | My Dataset  | Yes       | Needs Review   |
-    And resources:
-      | title        | dataset       | format |  published | workflow state |
-      | My Resource  | My Dataset    | csv    |  Yes       | Needs Review   |
+      | title        | dataset       | format |  published |
+      | My Resource  | My Dataset    | csv    |  Yes       |
+    And I update the moderation state of "My Dataset" to "Needs Review"
+    And I update the moderation state of "My Resource" to "Needs Review"
     And I visit the "Needs Review" page
     And I should see "My Resource"
     And I should see "My Dataset"
-    Examples:
-      | workbench roles                       |
-      | Workflow Contributor, content creator |
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
 
-  @fixme
-  # needs the global user fix
-  # It needs to implement workflow state hash in the table
-  Scenario Outline: As a user with the Workflow Roles, I should not be able to see Needs Review datasets I did not author in 'Needs Review'
-    Given I am logged in as a user with the "<workbench roles>" role
+  @ok
+  Scenario: As a user with the Workflow Contributor, I should not be able to see Needs Review contents I did not author in 'Needs Review'
+    Given I am logged in as a user with the "Workflow Contributor" role
     Given users:
-      | name            | roles                |
-      | some-other-user | Workflow Contributor |
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+      | contributor     | Workflow Contributor, content creator |
     And datasets:
-      | title           | author          | published | workflow state |
-      | Not My Dataset  | some-other-user | No        | Needs Review   |
+      | title           | author          | published |
+      | Not My Dataset  | some-other-user | No        |
     And resources:
-      | title            | dataset           | author          | format |  published  | workflow state |
-      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no         | Needs Review   |
-    And I visit the "<workflow tab>" page
-    And I should not see "Not My Resource"
-    And I should not see "Not My Dataset"
-    Examples:
-      | workbench roles                       | wor
-      | Workflow Contributor, content creator |
-      | Workflow Moderator, editor            |
-      | Workflow Supervisor, site manager     |
+      | title            | dataset           | author          | format |  published  |
+      | Not My Resource  | Not My Dataset    | some-other-user | csv    |  no         |
 
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
+    And "some-other-user" updates the moderation state of "Not My Resource" to "Needs Review"
+    And I visit the "Needs Review" page
+    Then I should not see "Not My Resource"
+    Then I should not see "Not My Dataset"
 
-    ################ TO BE CONTINUED #############################
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should be able to see Needs Review resources I authored in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Draft-Needs Review Resource"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Needs Review resources I did not author in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should not see the text "Bludhaven Needs Review-Needs Review Resource"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Contributor, I should not be able to see Published resources I authored in "Needs Review"
-    And I am logged in as "Auth-WC-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Draft-Published Resource"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should not be able to see draft datasets I did not author, but which belongs to my Agency, in "My Drafts"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Draft Dataset"
-
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Agency, in "Needs Review"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Needs Review Dataset"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "Needs review" page
-    Then I should not see the text "Bludhaven Needs Review Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I authored, and which do not belong to my Agency, in "Needs Review"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Bludhaven Crossover Dataset"
-
-
-  Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
-    And I am logged in as "ED-WM-Smallville"
-    And I am on "Needs review" page
-    Then I should not see the text "Bludhaven Needs Review Dataset"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should not be able to see draft datasets I did not author in "My Drafts"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "My drafts" page
-    Then I should not see the text "Smallville Draft Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which belong to my Agency, in "Needs Review"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Smallville Needs Review Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do not belong to my Agency, in "Needs Review"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Bludhaven Needs Review Dataset"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Needs Review resources I did not author, and which do not belong to my Agency, in "Needs Review"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Needs review" page
-    Then I should see the text "Bludhaven Needs Review-Needs Review Resource"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Draft datasets I did not author, and which do not belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Stale drafts" page
-    Then I should see the text "Bludhaven Draft Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Draft datasets I did not author, and which do belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Stale drafts" page
-    Then I should see the text "Smallville Draft Dataset"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do not belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Stale reviews" page
-    Then I should see the text "Bludhaven Needs Review Dataset"
-
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to see Needs Review datasets I did not author, and which do belong to my Agency, but which were submitted greater than 72 hours before now, in "Stale Drafts"
-    And I am logged in as "SM-WS-Smallville"
-    And I am on "Stale reviews" page
-    Then I should see the text "Smallville Needs Review Dataset"
-
-#  ----------------------------------------------------------------
+  @ok
+  Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
+    Given groups:
+      | title    | published |
+      | Group 01 | Yes       |
     Given users:
-      | user      | role            | group   |
-      | Rogue     | Authenticated User, Workflow Contributor  | XMen    |
-      | Cyclops   | Editor, Workflow Moderator      | XMen    |
-      | Xavier    | Site Manager, Workflow Supervisor   | XMen    |
-      | Mister Sinister   | Site Manager, Workflow Supervisor   |   |
-
-    And groups:
-      | title   |
-      | Xmen    |
-
-    And pages:
-      | title         | url                                 |
-      | My drafts     | admin/workbench/drafts-active       |
-      | Needs review  | admin/workbench/needs-review-active |
-
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+      | moderator       | Workflow Moderator, editor            |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | some-other-user | Group 01 | administrator member | Active            |
+      | moderator       | Group 01 | administrator member | Active            |
     And datasets:
-      | title                           | author        | moderation   | moderation_date   | date created  | publisher  |
-      | I Miss the Brotherhood        | Rogue   | draft        | Jul 21, 2015      | Jul 21, 2015  | XMen |
-      | It's kinda lonely being me  | Rogue   | needs_review | Jul 21, 2015      | Jul 21, 2015  | XMen |
+      | title           | author          | published | publisher |
+      | Not My Dataset  | some-other-user | No        | Group 01  |
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
+    Given I am logged in as "moderator"
+    And I am on "Needs Review" page
+    Then I should see the text "Not My Dataset"
+
+  @ok
+  Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
+    Given groups:
+      | title    | published |
+      | Group 01 | Yes       |
+      | Group 02 | Yes       |
+    Given users:
+      | name            | roles                                 |
+      | some-other-user | Workflow Contributor, content creator |
+      | moderator       | Workflow Moderator, editor            |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | some-other-user | Group 01 | administrator member | Active            |
+      | moderator       | Group 02 | administrator member | Active            |
+    And datasets:
+      | title           | author          | published | publisher |
+      | Not My Dataset  | some-other-user | No        | Group 01  |
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
+    Given I am logged in as "moderator"
+    And I am on "Needs Review" page
+    Then I should not see the text "Not My Dataset"
+
+  @ok
+  Scenario: As a Workflow Supervisor, I should be able to see Needs Review content I did not author, regardless whether it belongs to my group or not, in 'Needs Review'
+    Given groups:
+      | title    | published |
+      | Group 01 | Yes       |
+      | Group 02 | Yes       |
+    Given users:
+      | name            | roles                                 |
+      | other-user      | Workflow Contributor, content creator |
+      | some-other-user | Workflow Contributor, content creator |
+      | supervisor      | Workflow Supervisor, site manager     |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | other-user      | Group 02 | administrator member | Active            |
+      | some-other-user | Group 01 | administrator member | Active            |
+      | supervisor      | Group 01 | administrator member | Active            |
+    And datasets:
+      | title                 | author          | published | publisher |
+      | Still Not My Dataset  | other-user      | No        | Group 01  |
+      | Not My Dataset        | some-other-user | No        | Group 02  |
+    And "other-user" updates the moderation state of "Still Not My Dataset" to "Needs Review"
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review"
+    Given I am logged in as "supervisor"
+    And I am on "Needs Review" page
+    Then I should see the text "Still Not My Dataset"
+    Then I should see the text "Not My Dataset"
+
+  @ok
+  Scenario: As a Workflow Supervisor I should be able to see content in the 'Needs Review' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Reviews'
+    Given groups:
+      | title    | published |
+      | Group 01 | Yes       |
+      | Group 02 | Yes       |
+    Given users:
+      | name            | roles                                 |
+      | other-user      | Workflow Contributor, content creator |
+      | some-other-user | Workflow Contributor, content creator |
+      | supervisor      | Workflow Supervisor, site manager     |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | other-user      | Group 02 | administrator member | Active            |
+      | some-other-user | Group 01 | administrator member | Active            |
+      | supervisor      | Group 01 | administrator member | Active            |
+    And datasets:
+      | title                 | author          | published | publisher |
+      | Still Not My Dataset  | other-user      | No        | Group 01  |
+      | Not My Dataset        | some-other-user | No        | Group 02  |
+    And "other-user" updates the moderation state of "Still Not My Dataset" to "Needs Review" on date "30 days ago"
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Needs Review" on date "30 days ago"
+    Given I am logged in as "supervisor"
+    And I am on "Stale Reviews" page
+    Then I should see the text "Still Not My Dataset"
+    Then I should see the text "Not My Dataset"
+
+  @ok
+  Scenario: As a Workflow Supervisor I should be able to see content in the 'Draft' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Drafts'
+    Given groups:
+      | title    | published |
+      | Group 01 | Yes       |
+      | Group 02 | Yes       |
+    Given users:
+      | name            | roles                                 |
+      | other-user      | Workflow Contributor, content creator |
+      | some-other-user | Workflow Contributor, content creator |
+      | supervisor      | Workflow Supervisor, site manager     |
+    And group memberships:
+      | user            | group    | role on group        | membership status |
+      | other-user      | Group 02 | administrator member | Active            |
+      | some-other-user | Group 01 | administrator member | Active            |
+      | supervisor      | Group 01 | administrator member | Active            |
+    And datasets:
+      | title                 | author          | published | publisher |
+      | Still Not My Dataset  | other-user      | No        | Group 01  |
+      | Not My Dataset        | some-other-user | No        | Group 02  |
+    And "other-user" updates the moderation state of "Still Not My Dataset" to "Draft" on date "30 days ago"
+    And "some-other-user" updates the moderation state of "Not My Dataset" to "Draft" on date "30 days ago"
+    Given I am logged in as "supervisor"
+    And I am on "Stale Drafts" page
+    Then I should see the text "Still Not My Dataset"
+    Then I should see the text "Not My Dataset"
 
 
-  @api @disablecaptcha
-  Scenario: As an Authenticated user, I should be able to upgrade my content to Needs Review
-    And I am logged in as "Rogue"
-    And I am on the "My drafts" page
-    Then I should see the "Submit for Review" link next to "I Miss the Brotherhood"
+  ################ TO BE CONTINUED #############################
 
-  @api @disablecaptcha
-  Scenario: As an Authenticated user, I should not be able to upgrade my content to Published
-    And I am logged in as "Rogue"
-    And I am on the "Needs review" page
-    Then I should not see the "Publish" link next to "It's kinda lonely being me"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Moderator, I should be able to upgrade content belonging to my Agency to Published
-    And I am logged in as "Cyclops"
-    And I am on the "Needs review" page
-    Then I should see the "Publish" link next to "It's kinda lonely being me"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to upgrade content belonging to my Agency to Published
-    And I am logged in as "Xavier"
-    And I am on the "Needs review" page
-    Then I should see the "Publish" link next to "It's kinda lonely being me"
-
-  @api @disablecaptcha
-  Scenario: As a Workflow Supervisor, I should be able to upgrade content outside my Agency to Published
-    And I am logged in as "Mister Sinister"
-    And I am on the "Needs review" page
-    Then I should see the "Publish" link next to "It's kinda lonely being me"
-
-
-#  ----------------------------------------------------------------
+############### EMAIL
 
     Given groups:
 
