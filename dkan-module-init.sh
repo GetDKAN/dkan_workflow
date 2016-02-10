@@ -27,7 +27,7 @@ fi
 #Only stop on errors starting now..
 set -e
 # OK, run the script.
-bash /tmp/dkan-init.sh $DKAN_MODULE $@ --skip-reinstall
+bash /tmp/dkan-init.sh $DKAN_MODULE $@ --skip-reinstall --branch=$DKAN_BRANCH
 ahoy dkan module-link $DKAN_MODULE
 ahoy dkan module-make $DKAN_MODULE
 ahoy dkan reinstall
