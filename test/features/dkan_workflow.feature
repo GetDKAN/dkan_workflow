@@ -371,242 +371,133 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
+  # EMAIL NOTIFICATIONS: Content WITH group.
 
-  ################ TO BE CONTINUED #############################
-
-############### EMAIL
+  @api @disablecaptcha @mail
+  Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content with group is changed
+    Given users:
+      | name             | mail                       | status | roles                                 |
+      | Administrator    | admin@test.com             | 1      | administrator                         |
+      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
+      | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
+      | Supervisor S1G1  | supervisor-s1g1@test.com   | 1      | Workflow Supervisor, site manager     |
+      | Contributor C1G2 | contributor-c1g2@test.com  | 1      | Workflow Contributor, content creator |
+      | Moderator M1G2   | moderator-m1g2@test.com    | 1      | Workflow Moderator, editor            |
+      | Supervisor S1G2  | supervisor-s1g2@test.com   | 1      | Workflow Supervisor, site manager     |
 
     Given groups:
+      | title    | author         | published |
+      | Group 01 | Administrator  | Yes       |
+      | Group 02 | Administrator  | Yes       |
+    And group memberships:
+      | user              | group    | role on group        | membership status |
+      | Administrator     | Group 01 | administrator member | Active            |
+      | Contributor C1G1  | Group 01 | member               | Active            |
+      | Contributor C2G1  | Group 01 | member               | Active            |
+      | Moderator M1G1    | Group 01 | member               | Active            |
+      | Moderator M2G1    | Group 01 | member               | Active            |
+      | Supervisor S1G1   | Group 01 | member               | Active            |
+      | Administrator     | Group 02 | administrator member | Active            |
+      | Contributor C1G2  | Group 02 | member               | Active            |
+      | Moderator M1G2    | Group 02 | member               | Active            |
+      | Supervisor S1G2   | Group 02 | member               | Active            |
+    And datasets:
+      | title         | author           | published | publisher |
+      | Dataset 01    | Contributor C1G1 | No        | Group 01  |
 
-      | title   |
-      | Smallville  |
-      | Bludhaven   |
+    Given I am logged in as "Moderator M1G1"
+    # Transition: Draft -> Needs Review
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    Then the user "<user>" <outcome> receive an email
 
+    # Transition: Needs Review -> Draft
+    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    And the email queue is cleared
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Draft"
+    Then the user "<user>" <outcome> receive an email
+
+    # Transition: Needs Review -> Published
+    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    And the email queue is cleared
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Published"
+    Then the user "<user>" <outcome> receive an email
+
+  Examples:
+    | user             | outcome    |
+    | Contributor C1G1 | should     |
+    | Contributor C2G1 | should not |
+    | Moderator M1G1   | should not |
+    | Moderator M2G1   | should     |
+    | Supervisor S1G1  | should not |
+    | Contributor C1G2 | should not |
+    | Moderator M1G2   | should not |
+    | Supervisor S1G2  | should not |
+
+    
+  # EMAIL NOTIFICATIONS: Content WITHOUT group.
+
+  @api @disablecaptcha @mail
+  Scenario Outline: As a user with a workflow role I should receive an email notification if needed when the moderation status on a content without group is changed
     Given users:
+      | name             | mail                       | status | roles                                 |
+      | Administrator    | admin@test.com             | 1      | administrator                         |
+      | Contributor C1G1 | contributor-c1g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Contributor C2G1 | contributor-c2g1@test.com  | 1      | Workflow Contributor, content creator |
+      | Moderator M1G1   | moderator-m1g1@test.com    | 1      | Workflow Moderator, editor            |
+      | Moderator M2G1   | moderator-m2g1@test.com    | 1      | Workflow Moderator, editor            |
+      | Supervisor S1G1  | supervisor-s1g1@test.com   | 1      | Workflow Supervisor, site manager     |
+      | Supervisor S2G1  | supervisor-s2g1@test.com   | 1      | Workflow Supervisor, site manager     |
+      | Contributor C1G2 | contributor-c1g2@test.com  | 1      | Workflow Contributor, content creator |
+      | Moderator M1G2   | moderator-m1g2@test.com    | 1      | Workflow Moderator, editor            |
+      | Supervisor S1G2  | supervisor-s1g2@test.com   | 1      | Workflow Supervisor, site manager     |
 
-      | name    | mail        | status| roles     |
-      | Robin   | robin@teentitans.org    | 1   | Workflow Contributor  |
-      | Spoiler | stephanie.brown@yahoo.com   | 0   | Workflow Contributor  |
-      | Nightwing   | acrobatman@bludhaven.com  | 1   | Workflow Moderator  |
-      | Batgirl   | silenceisgolden@bludhaven.com | 1   | Workflow Moderator  |
-      | Oracle  | iseeall@clocktower.org  | 1   | Workflow Supervisor   |
-      | Superboy  | konel@teentitans.org    | 1   | Workflow Contributor  |
-      | Ma Kent   | supermom@smallville.com   | 1   | Workflow Moderator  |
-      | Pa Kent   | superdad@smallville.com   | 1   | Workflow Moderator  |
+    Given groups:
+      | title    | author         | published |
+      | Group 01 | Administrator  | Yes       |
+      | Group 02 | Administrator  | Yes       |
+    And group memberships:
+      | user              | group    | role on group        | membership status |
+      | Administrator     | Group 01 | administrator member | Active            |
+      | Contributor C1G1  | Group 01 | member               | Active            |
+      | Contributor C2G1  | Group 01 | member               | Active            |
+      | Moderator M1G1    | Group 01 | member               | Active            |
+      | Moderator M2G1    | Group 01 | member               | Active            |
+      | Supervisor S1G1   | Group 01 | member               | Active            |
+      | Administrator     | Group 02 | administrator member | Active            |
+      | Contributor C1G2  | Group 02 | member               | Active            |
+      | Moderator M1G2    | Group 02 | member               | Active            |
+      | Supervisor S1G2   | Group 02 | member               | Active            |
+    And datasets:
+      | title         | author           | published | publisher |
+      | Dataset 01    | Contributor C1G1 | No        |           |
 
-    Given group memberships:
+    Given I am logged in as "Moderator M1G1"
+    # Transition: Draft -> Needs Review
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    Then the user "<user>" <outcome> receive an email
 
-      | user    | role on group   | group   | membership status   |
-      | Robin   | member    | Bludhaven   | Active    |
-      | Spoiler   | member    | Bludhaven   | Active    |
-      | Nightwing   | member    | Bludhaven   | Active    |
-      | Batgirl   | member    | Bludhaven   | Active    |
-      | Oracle  | administrator member  | Bludhaven   | Active    |
-      | Superboy  | member    | Smallville  | Active    |
-      | Ma Kent   | member    | Smallville  | Active    |
-      | Pa Kent   | member    | Smallville  | Inactive    |
+    # Transition: Needs Review -> Draft
+    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    And the email queue is cleared
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Draft"
+    Then the user "<user>" <outcome> receive an email
 
-    Given content:
+    # Transition: Needs Review -> Published
+    Given "Moderator M1G1" updates the moderation state of "Dataset 01" to "Needs Review"
+    And the email queue is cleared
+    When "Moderator M1G1" updates the moderation state of "Dataset 01" to "Published"
+    Then the user "<user>" <outcome> receive an email
 
-      | title         | content type  | author  | moderation  | publisher   |
-      | Bludhaven Feedback Draft    | Feedback  | Robin   | draft   | Bludhaven   |
-      | Bludhaven Feedback Needs Review   | Feedback  | Robin   | needs_review  | Bludhaven   |
-      | Smallville Feedback Draft     | Feedback  | Superboy  | draft   | Smallville  |
-      | Smallville Feedback Needs Review  | Feedback  | Superboy  | needs_review  | Smallville  |
-      | Smallville Dataset Draft    | Dataset   | Superboy  | draft   | Smallville  |
-      | Smallville Dataset Needs Review   | Dataset   | Pa Kent   | needs_review  | Smallville  |
-      | Groupless Feedback Draft    | Feedback  | Robin   | draft   |     |
-      | Groupless Feedback Needs Review 1   | Feedback  | Spoiler   | needs_review  |     |
-      | Groupless Feedback Needs Review 2   | Feedback  | Robin   | needs_review  |     |
-
-    And pages:
-      | title         | url                                 |
-      | My drafts     | admin/workbench/drafts-active       |
-      | Needs review  | admin/workbench/needs-review-active |
-
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" all Workflow Moderators in the content's Agency should receive an email
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
-    Then the user "Nightwing" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" all Workflow Moderators in the content's Agency should receive an email
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
-    Then the user "Batgirl" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" Workflow Supervisors in the content's Agency should not receive an email
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Bludhaven Feedback Draft"
-    Then the user "Oracle" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish" the Content Author should be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Robin" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Moderators in the content's agency should not be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Batgirl" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Moderators in the content's agency should not be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Nightwing" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", all Workflow Supervisors in the content's agency should not be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Oracle" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", Workflow Contributors moutside the content's agency should not be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Superboy" should not receive an email
-
-  @api @disablecaptcha
-
-
-  Scenario: Given I am logged in as a Workflow Moderator and I am on the "Needs Review" page, when I click "Publish", Workflow Moderators outside the content's agency should not be notified
-    And I am logged in as "Nightwing"
-    And I am on the "Needs review" page
-    And I click the "Publish" link next to "Bludhaven Feedback Needs Review"
-    Then the user "Ma Kent" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Content Authors should be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Robin" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Contributors who are not the content author should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Superboy" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Supervisors who are not the content author should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Oracle" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Ma Kent" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Nightwing" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Moderators should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 1"
-    Then the user "Batgirl" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, inactive Content Authors should not be notified
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 2"
-    Then the user "Spoiler" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Supervisor and I am on the "Needs Review" page, when I click "Reject" for content with no Agency, Workflow Supervisors should not be notified, even if the user is inactive
-    And I am logged in as "Oracle"
-    And I am on the "Needs review" page
-    And I click the "Reject" link next to "Groupless Feedback Needs Review 2"
-    Then the user "Oracle" should not receive an email
-
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Supervisors should be notified
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
-    Then the user "Oracle" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Content Authors should be notified
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
-    Then the user "Robin" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Moderators should not be notified
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
-    Then the user "Ma Kent" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review" for content with no Agency, Workflow Moderators should not be notified
-    And I am logged in as "Robin"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Groupless Feedback Draft"
-    Then the user "Nightwing" should not receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review", all Workflow Moderators within that Agency should be notified
-    And I am logged in as "Superboy"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Smallville Dataset Draft"
-    Then the user "Ma Kent" should receive an email
-
-  @api @disablecaptcha
-
-  Scenario: Given I am logged in as a Workflow Contributor and I am on the "My drafts" page, when I click "Submit for Review," Workflow Moderators with an inactive membership to that Agency should not be notified
-    And I am logged in as "Superboy"
-    And I am on the "My drafts" page
-    And I click the "Submit for Review" link next to "Smallville Dataset Draft"
-    Then the user "Pa Kent" should not receive an email
+  Examples:
+    | user             | outcome    |
+    | Contributor C1G1 | should     |
+    | Contributor C2G1 | should not |
+    | Moderator M1G1   | should not |
+    | Moderator M2G1   | should not |
+    | Supervisor S1G1  | should     |
+    | Supervisor S2G1  | should     |
+    | Contributor C1G2 | should not |
+    | Moderator M1G2   | should not |
+    | Supervisor S1G2  | should     |
