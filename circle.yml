@@ -69,7 +69,7 @@ test:
   override:
   # Fix for behat bug not recognizing symlinked feature files.
   #  - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/modules/dkan/dkan_workflow/test/features docroot/profiles/dkan/test/features:
-     - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/test/features --tags='~@fixme&&~@noworkflow':
+     - bash dkan/test/circle-behat.sh  docroot/profiles/dkan/test/features --verbose=3 --tags='~@fixme&&~@noworkflow':
         parallel: true
   post:
     - echo $CIRCLE_ARTIFACTS; cp -av dkan/test/assets $CIRCLE_ARTIFACTS:
