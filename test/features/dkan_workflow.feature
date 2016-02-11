@@ -505,7 +505,7 @@ Feature:
 
 
   @api @javascript
-  Scenario: When administering users, role pairings should be enforced
+  Scenario: When administering users, role pairings with core roles should be enforced
 
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
