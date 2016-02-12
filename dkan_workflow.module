@@ -316,33 +316,6 @@ function dkan_workflow_views_query_alter(&$view, &$query) {
 }
 
 /**
- * Implements hook_node_grants().
- */
-function dkan_workflow_node_grants($user, $op) {
-  $grants['workbench_moderation'] = array($user->uid);
-  return $grants;
-}
-
-/**
- * Implements hook_node_access_records().
- */
-function dkan_workflow_node_access_records($node) {
-  if ($node->status) {
-    // It's published, default handling is okay.
-    return;
-  }
-  $grants[] = array(
-    'realm' => 'workbench_moderation',
-    'gid' => $node->uid,
-    'grant_view' => 1,
-    'grant_update' => 0,
-    'grant_delete' => 0,
-    'priority' => 0,
-  );
-  return !empty($grants) ? $grants : array();
-}
-
-/**
  * Implements hook_mail_alter().
  */
 function dkan_workflow_mail_alter(&$message) {
