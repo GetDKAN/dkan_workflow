@@ -14,7 +14,6 @@ Feature:
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
 
-  @fixme
   # Non workbench roles can see the menu item My Workflow. However
   # they can't access to the page.
   Scenario Outline: As a user without a Workbench role, I should not be able to access My Workbench or the My Workbench tabs
@@ -435,7 +434,7 @@ Feature:
     | Moderator M1G2   | should not |
     | Supervisor S1G2  | should not |
 
-    
+
   # EMAIL NOTIFICATIONS: Content WITHOUT group.
 
   @api @disablecaptcha @mail
