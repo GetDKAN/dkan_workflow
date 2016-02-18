@@ -3,7 +3,7 @@
 DKAN_MODULE="dkan_workflow"
 
 # DKAN branch to use
-DKAN_BRANCH="workflow"
+DKAN_BRANCH="workflow-menu-links"
 
 COMPOSER_PATH=".composer/vendor/bin"
 
