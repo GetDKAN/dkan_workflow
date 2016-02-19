@@ -13,6 +13,7 @@ Feature:
       | Stale Reviews      | /admin/workbench/needs-review-stale  |
       | My Edits           | /admin/workbench/content/edited      |
       | All Recent Content | /admin/workbench/content/all         |
+      | Create User        | /admin/people/create                 |
 
   # Non workbench roles can see the menu item My Workflow. However
   # they can't access to the page.
@@ -500,3 +501,13 @@ Feature:
     | Contributor C1G2 | should not |
     | Moderator M1G2   | should not |
     | Supervisor S1G2  | should     |
+
+
+  @api @javascript
+  Scenario: When administering users, role pairings with core roles should be enforced
+
+    Given I am logged in as a user with the "administrator" role
+    And I visit the "Create User" page
+    Then the checkbox "content creator" should not be checked
+    And I check the box "Workflow Contributor"
+    Then the checkbox "content creator" should be checked
