@@ -30,9 +30,9 @@ function dkan_workflow_menu_link_alter(&$link) {
 /**
  * Implements hook_translated_menu_link_alter().
  */
-function dkan_workflow_translated_menu_link_alter(&$link, $map) {
+function dkan_workflow_translated_menu_link_alter(&$link) {
   if ($link['link_path'] == 'admin/workbench' && !user_access('access workbench')) {
-    $link['hidden'] = TRUE;
+    $link['hidden'] = 1;
   }
 }
 
