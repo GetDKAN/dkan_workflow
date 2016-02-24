@@ -21,7 +21,7 @@ function dkan_workflow_menu_alter(&$items) {
  * Implements hook_node_grants().
  */
 function dkan_workflow_node_grants($user, $op) {
-  $grants['workbench_moderation'] = array($user->uid);
+  $grants['dkan_workflow'] = array($user->uid);
   return $grants;
 }
 
@@ -34,7 +34,7 @@ function dkan_workflow_node_access_records($node) {
     return;
   }
   $grants[] = array(
-    'realm' => 'workbench_moderation',
+    'realm' => 'dkan_workflow',
     'gid' => $node->uid,
     'grant_view' => 1,
     'grant_update' => 0,
@@ -42,25 +42,6 @@ function dkan_workflow_node_access_records($node) {
     'priority' => 0,
   );
   return !empty($grants) ? $grants : array();
-}
-
-/**
- * Implements hook_menu_link_alter().
- */
-function dkan_workflow_menu_link_alter(&$link) {
-  if ($link['link_path'] == 'admin/workbench') {
-    $link['options']['alter'] = TRUE;
-
-  }
-}
-
-/**
- * Implements hook_translated_menu_link_alter().
- */
-function dkan_workflow_translated_menu_link_alter(&$link) {
-  if ($link['link_path'] == 'admin/workbench' && !user_access('access workbench')) {
-    $link['hidden'] = 1;
-  }
 }
 
 /**
