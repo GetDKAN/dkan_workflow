@@ -28,12 +28,12 @@
             }
             function checkAndDisable(rid) {
                 $("#edit-roles-" + rid).prop('checked', true)
-                    .prop("disabled", true);
-                // Make sure the form element is enabled when the form is submitted.
-                // @todo Stop from accumulating multiple listeners if user clicks more than once
-                $("#user-profile-form").on('submit', function(e) {
-                    $("#edit-roles-" + rid).prop("disabled", false);
-                });
+                    .prop("disabled", true)
+                    // Make sure the form element is enabled when the form is submitted.
+                    // @todo Stop from accumulating multiple listeners if user clicks more than once
+                    .closest("form").on('submit', function(e) {
+                        $("#edit-roles-" + rid).prop("disabled", false);
+                    });
             }
             function unCheckAndEnable(rid) {
                 $("#edit-roles-" + rid).prop('checked', false)

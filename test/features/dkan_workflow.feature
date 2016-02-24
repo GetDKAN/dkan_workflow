@@ -503,18 +503,19 @@ Feature:
     | Supervisor S1G2  | should     |
 
 
-  @api @javascript
+  @api @javascript @ahoyRunMe
   Scenario: When administering users, role pairings with core roles should be enforced
 
     Given I am logged in as a user with the "administrator" role
     And I visit the "Create User" page
     Then the checkbox "content creator" should not be checked
+    When I fill in "Username" with "Contributor RolePairing"
+    And I fill in "E-mail address" with "pairing@test.com"
+    And I fill in "Password" with "password"
+    And I fill in "Confirm password" with "password"
     And I check the box "Workflow Contributor"
     Then the checkbox "content creator" should be checked
-    When I fill in "Username" with "Contributor RolePairing"
-    And I fill in "E-mail Address" with "pairing@test.com"
-    And I fill in "Password" with "password"
-    And I press "Create new account"
+    When I press "Create new account"
     Then I should see "Created a new user account for Contributor RolePairing"
     When I click "Contributor RolePairing"
     And I click "Edit"
