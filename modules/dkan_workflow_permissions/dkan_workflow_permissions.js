@@ -2,17 +2,47 @@
     Drupal.behaviors.checkbox = {
         // Enforce role pairings defined in dkan_workflow_permissions_form_user_profile_form_alter()
         attach: function(context, settings) {
+            var rolePairings = settings.dkan_workflow_permissions.rolePairings;
+            // When we load the page, disable any checkboxes that are dependents for paired roles
+            for(dependee in rolePairings) {
+                if (rolePairings.hasOwnProperty(dependee)) {
+                    if (roleIsChecked(dependee) && roleIsChecked(rolePairings[dependee])) {
+                        checkAndDisable(rolePairings[dependee]);
+                    }
+                }
+            }
             $('#edit-roles').find('.form-checkbox').on('click', function(event) {
-                rolePairings = settings.dkan_workflow_permissions.rolePairings;
                 var clickedRole = $(this).val();
                 var isChecked = $(this)[0].checked;
                 if (clickedRole in rolePairings) {
-                    // The paired role should have the same checked property as the clicked role
-                    $("#edit-roles-" + rolePairings[clickedRole]).prop('checked', isChecked)
-                        // Coincidentally, the "disabled" attribute should be identical
-                        .attr("disabled", isChecked);
+                    if (isChecked) {
+                        checkAndDisable(rolePairings[clickedRole]);
+                    }
+                    else {
+                        unCheckAndEnable(rolePairings[clickedRole])
+                    }
                 }
             });
+
+            // Is the checkbox for this role id checked?
+            function roleIsChecked(rid) {
+                return $("#edit-roles-" + rid).prop("checked");
+            }
+            // Check and disable the checkbox for a given role id
+            function checkAndDisable(rid) {
+                $("#edit-roles-" + rid).prop('checked', true)
+                    .prop("disabled", true)
+                    // Make sure the form element is enabled when the form is submitted.
+                    // @todo Stop from accumulating multiple listeners if user clicks more than once
+                    .closest("form").on('submit', function(e) {
+                        $("#edit-roles-" + rid).prop("disabled", false);
+                    });
+            }
+            // Un-check and enable the checkbox for a given role id
+            function unCheckAndEnable(rid) {
+                $("#edit-roles-" + rid).prop('checked', false)
+                    .prop("disabled", false);
+            }
         }
     }
 })(jQuery);
