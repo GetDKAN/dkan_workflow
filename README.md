@@ -1,5 +1,4 @@
-[![Build
-Status](https://travis-ci.org/NuCivic/dkan_workflow.svg?branch=master)](https://travis-ci.org/NuCivic/dkan_workflow)
+[![Circle CI](https://circleci.com/gh/NuCivic/dkan_workflow.svg?style=svg)](https://circleci.com/gh/NuCivic/dkan_workflow)
 
 ## What is DKAN?
 
