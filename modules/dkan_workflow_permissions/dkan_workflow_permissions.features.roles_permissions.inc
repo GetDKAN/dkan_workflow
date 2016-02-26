@@ -16,6 +16,7 @@ function dkan_workflow_permissions_default_roles_permissions() {
     'weight' => 8,
     'machine_name' => 'workflow_moderator',
     'permissions' => array(
+      'access administration menu' => TRUE,
       'access workbench' => TRUE,
       'moderate content from draft to needs_review' => TRUE,
       'moderate content from needs_review to draft' => TRUE,
@@ -34,6 +35,7 @@ function dkan_workflow_permissions_default_roles_permissions() {
     'weight' => 7,
     'machine_name' => 'workflow_contributor',
     'permissions' => array(
+      'access administration menu' => TRUE,
       'access workbench' => TRUE,
       'moderate content from draft to needs_review' => TRUE,
       'moderate content from needs_review to draft' => TRUE,
@@ -50,6 +52,7 @@ function dkan_workflow_permissions_default_roles_permissions() {
     'weight' => 9,
     'machine_name' => 'workflow_supervisor',
     'permissions' => array(
+      'access administration menu' => TRUE,
       'access stale drafts page' => TRUE,
       'access stale reviews page' => TRUE,
       'access workbench' => TRUE,
