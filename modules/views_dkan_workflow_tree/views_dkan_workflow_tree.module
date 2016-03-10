@@ -348,14 +348,16 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
   // Groups
   // Probably move this to a configuration.
   $groups = array();
-  foreach($node->og_group_ref as $og_group_ref) {
-    $group_nid = $og_group_ref[0]['target_id'];
-    $variables = array(
+  if (isset($node->og_group_ref)) {
+    foreach ($node->og_group_ref as $og_group_ref) {
+      $group_nid = $og_group_ref[0]['target_id'];
+      $variables = array(
         'text' => views_dkan_workflow_tree_get_node_title
         ($group_nid),
         'path' => 'node/' . $group_nid,
-    );
-    $groups[] = theme('link' ,$variables);
+      );
+      $groups[] = theme('link', $variables);
+    }
   }
 
   if (empty($groups)) {
@@ -403,12 +405,14 @@ function theme_dkan_workflow_tree_node(stdClass $node, $vbo) {
 
   $url_options = array('attributes' => array('class' => 'btn btn-default btn-primary'));
   $moderation_links = views_dkan_workflow_tree_get_moderation_links($node, $url_options);
-  foreach($moderation_links as $moderation_link) {
-    $output .= theme('link', array(
+  if (isset($moderation_links)) {
+    foreach ($moderation_links as $moderation_link) {
+      $output .= theme('link', array(
         'text' => $moderation_link['title'],
         'path' => $moderation_link['href'],
         'options' => $moderation_link,
-    ));
+      ));
+    }
   }
   $output .= '</span>';
 
