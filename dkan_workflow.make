@@ -4,8 +4,9 @@ api = 2
 projects[workbench][version] = 1.2
 projects[workbench][subdir] = contrib
 
-projects[workbench_moderation][version] = 1.4
+projects[workbench_moderation][version] = 7.x-1.x-dev
 projects[workbench_moderation][subdir] = contrib
+projects[workbench_moderation][download][revision] = "2c91211"
 projects[workbench_moderation][patch][2393771] = https://www.drupal.org/files/issues/specify_change_state_user-2393771-5.patch
 projects[workbench_moderation][patch][1838640] = https://www.drupal.org/files/issues/workbench_moderation-fix_callback_argument-1838640-23.patch
 
