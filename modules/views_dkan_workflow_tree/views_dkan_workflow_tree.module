@@ -118,7 +118,7 @@ function views_dkan_workflow_tree_views_bulk_operations_form_alter(&$form, &$for
       'class' => array('facet-icon')
     );
     $feedback_icon = array(
-      'type' => 'resource',
+      'type' => 'feedback',
       'class' => array('facet-icon')
     );
     $dataset_legend = '<span>'. theme('facet_icons', $dataset_icon) . ' Dataset</span>';
