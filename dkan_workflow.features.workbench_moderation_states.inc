@@ -21,6 +21,12 @@ function dkan_workflow_workbench_moderation_export_states() {
       'description' => 'Ready for moderation',
       'weight' => 0,
     ),
+    'needs_supervisor_review' => array(
+      'name' => 'needs_supervisor_review',
+      'label' => 'Needs Supervisor Review',
+      'description' => 'Ready for moderation',
+      'weight' => 0,
+    ),
     'published' => array(
       'name' => 'published',
       'label' => 'Published',

@@ -23,6 +23,14 @@ function dkan_workflow_strongarm() {
         'view_display_id' => 'my_drafts_badge',
       ),
     ),
+    'admin/workbench/needs-supervisor-review' => array(
+      'callback' => 'menu_badges_execute_view',
+      'key' => 'views_workbench_moderation_needs_supervisor_review_badge',
+      'arguments' => array(
+        'view_name' => 'workbench_moderation',
+        'view_display_id' => 'needs_supervisor_review_badge',
+      ),
+    ),
     'admin/workbench/needs-review' => array(
       'callback' => 'menu_badges_execute_view',
       'key' => 'views_workbench_moderation_needs_review_badge',
@@ -69,6 +77,14 @@ function dkan_workflow_strongarm() {
       'arguments' => array(
         'view_name' => 'workbench_moderation',
         'view_display_id' => 'stale_reviews_badge',
+      ),
+    ),
+    'admin/workbench/needs-supervisor-review-active' => array(
+      'callback' => 'menu_badges_execute_view',
+      'key' => 'views_workbench_moderation_needs_supervisor_review_badge',
+      'arguments' => array(
+        'view_name' => 'workbench_moderation',
+        'view_display_id' => 'needs_supervisor_review_badge',
       ),
     ),
     'admin/workbench/needs-review-active' => array(
