@@ -48,4 +48,17 @@ function dkan_workflow_enable() {
   }
   dkan_workflow_revert_views();
   variable_set('dkan_workflow_content_types', $dkan_workflow_content_types);
+  // Add dkan workflow roles to roleassign config.
+  $roles = variable_get('roleassign_roles', array());
+  $add_roles = array('Workflow Contributor' => 'Workflow Contributor', 'Workflow Moderator' => 'Workflow Moderator', 'Workflow Supervisor' => 'Workflow Supervisor');
+  $new_roles = array_merge($roles, $add_roles);
+  variable_set('roleassign_roles', $new_roles);
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_workflow_disable() {
+  $roles = array('editor' => 'editor', 'site manager' => 'site manager', 'content creator' => 'content creator', 'administrator' => 0);
+  variable_set('roleassign_roles', $roles);
 }
