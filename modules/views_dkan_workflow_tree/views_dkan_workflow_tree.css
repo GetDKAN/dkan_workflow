@@ -31,6 +31,7 @@
 .references .icon-dkan:before {
   color: #666;
   padding-right: 0;
+  vertical-align: middle;
 }
 
 .views-dkan-workflow-tree-actions {
