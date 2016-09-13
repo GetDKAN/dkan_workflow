@@ -524,9 +524,9 @@ Feature:
   @api
   Scenario: Modify user workflow roles as site manager
     Given users:
-      | name     | roles           |
-      | Pat      | content creator |
-      | Chris    | site manager    |
+      | name     | roles           | mail           |
+      | Pat      | content creator | pat@test.com   |
+      | Chris    | site manager    | chris@test.com |
     Given pages:
       | name          | url           |
       | Users         | /admin/people |
